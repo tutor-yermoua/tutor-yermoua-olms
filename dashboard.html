@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLMS-YMK</title>
+    <!-- Google Font: Noto Sans Lao -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- SheetJS (xlsx) Library ສຳລັບສ້າງ Excel ຝັ່ງ Client -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- Chart.js ສຳລັບສະແດງກາຟ Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap');
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans Lao', sans-serif;
+        }
+        
+        html, body{
+            height: 100vh;
+            background: #0f172a;
+            color: #fff;
+            overflow: hidden; 
+            display: flex;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2c4766; 
+            border-radius: 10px;
+            border: 2px solid #0f172a;
+            transition: all 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover,
+        ::-webkit-scrollbar-thumb:active {
+            background: #0ef;
+            border: 3px solid #0f172a;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 220px;
+            background: #1f293a;
+            z-index: 100;
+            border-right: 1px solid #2c4766;
+            padding-top: 10px;
+            overflow-y: auto;
+        }
+        .sidebar .logo-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 15px 25px 15px;
+            border-bottom: 1px solid #2c4766;
+            margin-bottom: 10px;
+        }
+        .logo-icon-box {
+            width: 70px;
+            height: 70px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .logo-icon-box:hover {
+            transform: scale(1.05);
+        }
+        .logo-icon-box i {
+            font-size: 1.8em;
+            color: #0d5cbe;
+        }
+        .sidebar .nav-links {
+            margin-top: 0px;
+        }
+        .sidebar .nav-links li {
+            position: relative;
+            list-style: none;
+            height: 45px;
+            margin: 5px 0;
+        }
+        .sidebar .nav-links li a {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.4s ease;
+        }
+        .sidebar .nav-links li a.active,
+        .sidebar .nav-links li a:hover {
+            background: #2c4766;
+        }
+        .sidebar .nav-links li i {
+            font-size: 16px;
+            color: #0ef;
+            min-width: 50px;
+            text-align: center;
+        }
+        .sidebar .nav-links li a .link_name {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        .sidebar .nav-links .log_out {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid #2c4766;
+        }
+
+        /* Home Section */
+        .home-section {
+            position: absolute;
+            background: #0f172a;
+            height: 100vh;
+            width: calc(100% - 220px);
+            left: 220px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .home-section nav {
+            height: 60px;
+            background: #1f293a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid #2c4766;
+            flex-shrink: 0;
+        }
+        .home-section nav .sidebar-button {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+        }
+        .home-section nav .profile-details {
+            display: flex;
+            align-items: center;
+            background: #0f172a;
+            border: 2px solid #2c4766;
+            border-radius: 40px;
+            padding: 3px 15px 3px 6px;
+        }
+        .home-section nav .profile-details .admin_name {
+            font-size: 13px;
+            font-weight: 500;
+            margin-left: 8px;
+            color: #fff;
+        }
+
+        .home-content {
+            padding: 15px 20px;
+            overflow-y: auto; 
+            flex-grow: 1;
+        }
+        .home-content .overview-boxes {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .overview-boxes .box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: calc(32% - 10px); /* ກັບມາເປັນ 3 ກ່ອງຄືເກົ່າ */
+            background: #1f293a;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #2c4766;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .overview-boxes .box-topic {
+            font-size: 18px;
+            color: #94a3b8;
+        }
+        .overview-boxes .number {
+            display: inline-block;
+            font-size: 22px;
+            margin-top: 3px;
+            font-weight: 600;
+            color: #0ef;
+        }
+        .overview-boxes .indicator {
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        .overview-boxes .indicator i {
+            margin-right: 4px;
+            color: #10b981;
+        }
+        .overview-boxes .box .cart {
+            font-size: 30px;
+            color: #0ef;
+            background: rgba(0, 238, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        /* Dashboard Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .chart-card {
+            background: #1f293a;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #2c4766;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .chart-card h3 {
+            color: #0ef;
+            font-size: 0.95em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #2c4766;
+            padding-bottom: 6px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 240px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-container {
+            width: 100%;
+            margin: 0;
+            background: #1f293a;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #2c4766;
+        }
+        .section-title {
+            color: #0ef;
+            font-size: 1em;
+            margin: 30px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #2c4766;
+            padding-bottom: 4px;
+        }
+        .section-title:first-child {
+            margin-top: 0;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+        .input-box-v {
+            position: relative;
+        }
+        .input-box-v label {
+            display: block;
+            color: #0ef;
+            font-size: 0.8em;
+            margin-bottom: 3px;
+        }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-box-v input, .input-box-v select {
+            width: 100%;
+            height: 35px;
+            background: #0f172a;
+            border: 2px solid #2c4766;
+            border-radius: 6px;
+            color: #fff;
+            padding: 0 12px;
+            font-size: 0.85em;
+            outline: none;
+            transition: 0.3s;
+        }
+        .input-box-v input {
+            padding-left: 35px;
+        }
+        .input-box-v select option {
+            color: #000;
+            background: #fff;
+            padding: 10px;
+        }
+        .input-box-v input:focus, .input-box-v select:focus {
+            border-color: #0ef;
+        }
+
+        /* Custom Dropdown Styling */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+        }
+        .custom-select-btn {
+            width: 100%;
+            height: 35px;
+            background: #0f172a;
+            border: 2px solid #2c4766;
+            border-radius: 6px;
+            color: #fff;
+            padding: 0 12px;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .custom-select-btn:hover {
+            border-color: #0ef;
+        }
+        .custom-dropdown-list {
+            position: absolute;
+            top: 38px;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border: 2px solid #2c4766;
+            border-radius: 6px;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+        .custom-dropdown-list.active {
+            display: block;
+        }
+        .custom-option {
+            padding: 6px 10px;
+            color: #000;
+            font-size: 0.85em;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            transition: 0.2s;
+        }
+        .custom-option:hover {
+            background: #0ef;
+            color: #1f293a;
+        }
+
+        .input-error {
+            border-color: #ef4444 !important;
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 12px;
+            color: #0ef;
+            font-size: 0.9em;
+            pointer-events: none;
+        }
+        
+        .selection-grid {
+            display: grid;
+            grid-template-columns: 0.9fr 1.4fr;
+            gap: 12px;
+        }
+        .table-box {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #2c4766;
+        }
+        .table-box h4 {
+            color: #0ef;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .table-container-scroll {
+            max-height: 400px !important;
+            overflow-y: auto;
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #2c4766;
+            font-size: 0.85em;
+            color: #fff;
+            text-align: left;
+            white-space: nowrap;
+        }
+        th {
+            color: #94a3b8;
+            position: sticky;
+            top: 0;
+            background: #0f172a;
+            z-index: 5;
+        }
+        .btn-add {
+            background: #0ef;
+            color: #1f293a;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-add:hover { background: #00bcd4; }
+        .btn-remove {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .total-box {
+            margin-top: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #0ef;
+            text-align: right;
+        }
+        .btn-container {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn-action-custom {
+            background: #0ef;
+            color: #1f293a;
+            border: none;
+            padding: 7px 18px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-action-custom:hover {
+            background: #00bcd4;
+            box-shadow: 0 0 10px rgba(0, 238, 255, 0.4);
+        }
+        .btn-back {
+            background: #2c4766;
+            color: #fff;
+        }
+        .btn-back:hover {
+            background: #3a5b7d;
+            box-shadow: none;
+        }
+        
+        .view-section {
+            display: none;
+        }
+        .view-section.active-view {
+            display: block;
+        }
+
+        #loading-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-content {
+            background: #1f293a;
+            border: 1px solid #2c4766;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #2c4766;
+            border-top: 4px solid #0ef;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            margin: 0 auto 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: #0ef;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+        .dots span {
+            animation: blink 1.4s infinite both;
+            font-weight: bold;
+        }
+        .dots span:nth-child(2) { animation-delay: .2s; }
+        .dots span:nth-child(3) { animation-delay: .4s; }
+        @keyframes blink {
+            0% { opacity: .2; }
+            20% { opacity: 1; }
+            100% { opacity: .2; }
+        }
+
+        #edit-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+        .edit-modal-content {
+            background: #1f293a;
+            border: 1px solid #2c4766;
+            padding: 18px 22px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 580px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .btn-edit-icon {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            padding: 4px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 3px;
+            transition: 0.3s;
+        }
+        .btn-edit-icon:hover { background: #2563eb; }
+        .btn-delete-icon {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 4px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-delete-icon:hover { background: #dc2626; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo-details">
+            <div class="logo-icon-box">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="#" onclick="switchView('dashboard', this)" class="active">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="link_name">ໜ້າຫຼັກ</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="switchView('manage-students', this)">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span class="link_name">ຈັດການຂໍ້ມູນນັກຮຽນ</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="switchView('reports', this)">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="link_name">ລາຍງານຂໍ້ມູນນັກຮຽນ</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="switchView('register-step1', this)">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span class="link_name">ລົງທະບຽນຮຽນ</span>
+                </a>
+            </li>
+            <li class="log_out">
+                <a href="index.html">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="link_name">ອອກຈາກລະບົບ</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <section class="home-section">
+        <nav>
+            <div class="sidebar-button">
+                <span class="dashboard" id="page-title">ລະບົບບໍລິຫານການຮຽນ-ການສອນອອນໄລນ໌</span>
+            </div>
+            <div class="profile-details">
+                <i class="fa-solid fa-user-circle" style="font-size: 1.6rem; color: #0ef;"></i>
+                <span class="admin_name">ຜູ້ດູແລລະບົບ (Admin)</span>
+            </div>
+        </nav>
+
+        <div class="home-content">
+
+            <!-- VIEW 1: ໜ້າຫຼັກ (Dashboard) -->
+            <div id="view-dashboard" class="view-section active-view">
+                <div class="overview-boxes">
+                    <div class="box">
+                        <div class="right-side">
+                            <span class="box-topic">ຈຳນວນນັກຮຽນທັງໝົດ</span>
+                            <div class="number" id="dash-total-students">0</div>
+                            <div class="indicator">
+                                <i class="fa-solid fa-users"></i>
+                                <span id="dash-gender-stats">ຊາຍ: 0 ຄົນ, ຍິງ: 0 ຄົນ</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-users cart"></i>
+                    </div>
+                    <div class="box">
+                        <div class="right-side">
+                            <span class="box-topic">ຫຼັກສູດທັງໝົດ</span>
+                            <div class="number">3</div>
+                            <div class="indicator">
+                                <i class="fa-solid fa-book"></i>
+                                <span>ຟີຊິກສາດ ມ.4,ຟີຊິກສາດ ມ.5+6 ແລະ ຟີຊິກສາດ ມ.7</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-book-open cart"></i>
+                    </div>
+                    <div class="box">
+                        <div class="right-side">
+                            <span class="box-topic">ແຂວງທີ່ມີຜູ້ຮຽນ</span>
+                            <div class="number" id="dash-total-provinces">0</div>
+                            <div class="indicator">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>ທົ່ວປະເທດ</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-map-location-dot cart"></i>
+                    </div>
+                </div>
+
+                <!-- ກາຟສະຖິຕິຕາມທີ່ຕ້ອງການ -->
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3><i class="fa-solid fa-chart-pie"></i> ຈຳນວນນັກຮຽນຕາມຊັ້ນຮຽນ</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="gradeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3><i class="fa-solid fa-chart-column"></i> ຈຳນວນນັກຮຽນຕາມແຂວງ (%)</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="provinceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: ຈັດການຂໍ້ມູນນັກຮຽນ -->
+            <div id="view-manage-students" class="view-section">
+                <div class="register-container">
+                    <div class="section-title"><i class="fa-solid fa-users-gear"></i> ຈັດການຂໍ້ມູນນັກຮຽນທັງໝົດ</div>
+                    
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: center; margin-top: 8px; padding-right: 5px;">
+                        <div class="input-box-v">
+                            <div class="input-wrapper" style="display: inline-block;">
+                                <i class="fa-solid fa-magnifying-glass" style="top: 50%; transform: translateY(-50%); z-index: 10;"></i>
+                                <input type="text" id="manage-search-input" onkeyup="filterManageStudents()" placeholder="ຄົ້ນຫາຊື່, ໂຮງຮຽນ, ແຂວງ..." style="padding-left: 35px; width: 260px; height: 34px;" autocomplete="off">
+                            </div>
+                        </div>
+                        <div style="text-align: right; padding-right: 5px;">
+                            <div id="manage-student-count" style="font-size: 1em; font-weight: bold; color: #0ef;">ຈຳນວນນັກຮຽນທັງໝົດ 0 ຄົນ</div>
+                        </div>
+                    </div>
+
+                    <div class="table-box" style="margin-top: 8px;">
+                        <h4 style="margin-bottom: 8px;"><i class="fa-solid fa-list"></i> ຕາຕະລາງລາຍຊື່ນັກຮຽນ</h4>
+                        <div class="table-container-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ລຳດັບ</th>
+                                        <th>ຊື່ ແລະ ນາມສະກຸນ</th>
+                                        <th>ໂຮງຮຽນ</th>
+                                        <th>ວິຊາທີ່ເລືອກ</th>
+                                        <th>ເມືອງ</th>
+                                        <th>ແຂວງ</th>
+                                        <th>ເບີ WhatsApp</th>
+                                        <th>Facebook</th>
+                                        <th style="text-align: center;">ຈັດການ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="manage-student-table-body">
+                                    <tr>
+                                        <td colspan="9" style="text-align: center; color: #94a3b8;">ກຳລັງໂຫຼດຂໍ້ມູນຈາກ Database...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: ລາຍງານຂໍ້ມູນນັກຮຽນ -->
+            <div id="view-reports" class="view-section">
+                <div class="register-container">
+                    <div class="section-title"><i class="fa-solid fa-chart-line"></i> ລາຍງານຂໍ້ມູນນັກຮຽນ ແລະ ສະຖິຕິຕາມຊັ້ນຮຽນ</div>
+                    
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: center; margin-top: 8px; padding-right: 5px;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div class="input-box-v">
+                                <div class="input-wrapper" style="display: inline-block;">
+                                    <i class="fa-solid fa-filter" style="top: 50%; transform: translateY(-50%); z-index: 10;"></i>
+                                    <select id="report-grade-select" onchange="filterStudentReport()" style="padding-left: 35px; width: 230px; height: 34px;">
+                                        <option value="all">----- ສະແດງຂໍ້ມູນທັງໝົດ -----</option>
+                                        <option value="Ph4">ຟີຊິກສາດ ມ.4</option>
+                                        <option value="Ph56">ຟີຊິກສາດ ມ.5+6 (ຫ້ອງລວມ)</option>
+                                        <option value="Ph7">ຟີຊິກສາດ ມ.7</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-action-custom" onclick="exportToExcel()" style="height: 34px; background: #10b981; color: #fff; display: flex; align-items: center; gap: 6px; padding: 0 12px;">
+                                <i class="fa-solid fa-download"></i> ສົ່ງອອກ Excel
+                            </button>
+                        </div>
+
+                        <div style="text-align: right; padding-right: 5px;">
+                            <div id="report-result-display" style="font-size: 1em; font-weight: bold; color: #0ef;"></div>
+                        </div>
+                    </div>
+
+                    <div class="table-box" style="margin-top: 8px;">
+                        <h4 id="table-section-title" style="margin-bottom: 8px;"><i class="fa-solid fa-users"></i> ລາຍຊື່ນັກຮຽນທັງໝົດໃນລະບົບ</h4>
+                        <div class="table-container-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ລຳດັບ</th>
+                                        <th>ຊື່ ແລະ ນາມສະກຸນ</th>
+                                        <th>ໂຮງຮຽນ</th>
+                                        <th>ວິຊາທີ່ເລືອກຮຽນ</th>
+                                        <th>ເມືອງ</th>
+                                        <th>ແຂວງ</th>
+                                        <th>ເບີ WhatsApp</th>
+                                        <th>Facebook</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-table-body">
+                                    <tr>
+                                        <td colspan="8" style="text-align: center; color: #94a3b8;">ກຳລັງໂຫຼດຂໍ້ມູນຈາກ Database...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 4: ລົງທະບຽນຮຽນ (ຂັ້ນຕອນທີ 1) -->
+            <div id="view-register-step1" class="view-section">
+                <div class="register-container">
+                    <div class="section-title"><i class="fa-solid fa-user"></i> ຂໍ້ມູນສ່ວນຕົວ</div>
+                    <div class="form-row">
+                        <div class="input-box-v">
+                            <label>ຊື່ ແລະ ນາມສະກຸນ</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-user-pen"></i>
+                                <input type="text" id="fullname" placeholder="ປ້ອນຊື່ ແລະ ນາມສະກຸນ" oninput="removeError(this)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="input-box-v">
+                            <label>ໂຮງຮຽນ</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-school"></i>
+                                <input type="text" id="school" placeholder="ຊື່ໂຮງຮຽນ" oninput="removeError(this)" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-title"><i class="fa-solid fa-location-dot"></i> ທີ່ຢູ່ປັດຈຸບັນ</div>
+                    <div class="form-row">
+                        <div class="input-box-v">
+                            <label>ແຂວງ</label>
+                            <div class="custom-dropdown" id="province-dropdown">
+                                <div class="custom-select-btn" onclick="toggleDropdown('province')">
+                                    <span id="province-selected-text">----- ກະລຸນາເລືອກແຂວງ -----</span>
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0ef;"></i>
+                                </div>
+                                <div class="custom-dropdown-list" id="province-list"></div>
+                                <input type="hidden" id="province" value="">
+                            </div>
+                        </div>
+
+                        <div class="input-box-v">
+                            <label>ເມືອງ</label>
+                            <div class="custom-dropdown" id="district-dropdown">
+                                <div class="custom-select-btn" onclick="toggleDropdown('district')">
+                                    <span id="district-selected-text">----- ກະລຸນາເລືອກເມືອງ -----</span>
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0ef;"></i>
+                                </div>
+                                <div class="custom-dropdown-list" id="district-list">
+                                    <div class="custom-option" onclick="selectDistrict('', '----- ກະລຸນາເລືອກເມືອງ -----')">----- ກະລຸນາເລືອກເມືອງ -----</div>
+                                </div>
+                                <input type="hidden" id="district" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-title"><i class="fa-solid fa-comments"></i> ຊ່ອງທາງການຕິດຕໍ່</div>
+                    <div class="form-row">
+                        <div class="input-box-v">
+                            <label>ເບີ WhatsApp</label>
+                            <div class="input-wrapper">
+                                <i class="fa-brands fa-whatsapp" style="font-size: 1.1em;"></i>
+                                <input type="text" id="whatsapp" placeholder="ເບີ WhatsApp" oninput="removeError(this)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="input-box-v">
+                            <label>Facebook</label>
+                            <div class="input-wrapper">
+                                <i class="fa-brands fa-facebook"></i>
+                                <input type="text" id="facebook" placeholder="ຊື່ Facebook" oninput="removeError(this)" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-container" style="justify-content: flex-end; margin-top: 8px;">
+                        <button type="button" class="btn-action-custom" onclick="goToStep2()">ຕໍ່ໄປ <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 5: ລົງທະບຽນຮຽນ (ຂັ້ນຕອນທີ 2) -->
+            <div id="view-register-step2" class="view-section">
+                <div class="register-container">
+                    <div class="selection-grid">
+                        <div class="table-box">
+                            <h4>ລາຍວິຊາຮຽນທັງໝົດ</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ລຳດັບ</th>
+                                        <th>ວິຊາຮຽນ</th>
+                                        <th>ຄ່າຮຽນ</th>
+                                        <th>ເພີ່ມ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ph4</td>
+                                        <td>ຟີຊິກສາດ ມ.4</td>
+                                        <td>599,000</td>
+                                        <td><button type="button" class="btn-add" onclick="addSubject('Ph4', 'ຟີຊິກສາດ ມ.4',599000)"><i class="fa-solid fa-plus"></i></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ph56</td>
+                                        <td>ຟີຊິກສາດ ມ.5+6</td>
+                                        <td>599,000</td>
+                                        <td><button type="button" class="btn-add" onclick="addSubject('Ph56', 'ຟີຊິກສາດ ມ.5+6', 599000)"><i class="fa-solid fa-plus"></i></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ph7</td>
+                                        <td>ຟີຊິກສາດ ມ.7</td>
+                                        <td>599,000</td>
+                                        <td><button type="button" class="btn-add" onclick="addSubject('Ph7', 'ຟີຊິກສາດ ມ.7', 599000)"><i class="fa-solid fa-plus"></i></button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="table-box">
+                            <h4>ວິຊາທີ່ເລືອກຮຽນ</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ລະຫັດ</th>
+                                        <th>ວິຊາຮຽນ</th>
+                                        <th>ຄ່າຮຽນ</th>
+                                        <th>ຍົກເລີກ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="selected-list">
+                                    <tr><td colspan="4" style="text-align: center; color: #94a3b8;">ຍັງບໍ່ທັນມີວິຊາທີ່ເລືອກ</td></tr>
+                                </tbody>
+                            </table>
+                            <div class="total-box" id="total-price">ລວມເງິນທັງໝົດ: 0 ກີບ</div>
+                        </div>
+                    </div>
+
+                    <div class="btn-container">
+                        <button type="button" class="btn-action-custom btn-back" onclick="switchView('register-step1')"><i class="fa-solid fa-arrow-left"></i> ກັບຄືນ</button>
+                        <button type="button" class="btn-action-custom" onclick="submitRegistration()">ສົ່ງຂໍ້ມູນນັກຮຽນ</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal">
+        <div class="loading-content">
+            <div id="modal-spinner" class="spinner"></div>
+            <div id="modal-icon" style="display: none; font-size: 2.2em; color: #10b981; margin-bottom: 6px;">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div id="modal-text" class="loading-text">
+                ກຳລັງບັນທຶກ<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal">
+        <div class="edit-modal-content">
+            <div class="section-title"><i class="fa-solid fa-pen-to-square"></i> ແກ້ໄຂຂໍ້ມູນນັກຮຽນ</div>
+            <input type="hidden" id="edit-student-id">
+            
+            <div class="form-row">
+                <div class="input-box-v">
+                    <label>ຊື່ ແລະ ນາມສະກຸນ</label>
+                    <input type="text" id="edit-fullname" placeholder="ປ້ອນຊື່ ແລະ ນາມສະກຸນ" autocomplete="off">
+                </div>
+                <div class="input-box-v">
+                    <label>ໂຮງຮຽນ</label>
+                    <input type="text" id="edit-school" placeholder="ຊື່ໂຮງຮຽນ" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-box-v">
+                    <label>ແຂວງ</label>
+                    <div class="custom-dropdown" id="edit-province-dropdown">
+                        <div class="custom-select-btn" onclick="toggleEditDropdown('province')">
+                            <span id="edit-province-selected-text">----- ກະລຸນາເລືອກແຂວງ -----</span>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0ef;"></i>
+                        </div>
+                        <div class="custom-dropdown-list" id="edit-province-list"></div>
+                        <input type="hidden" id="edit-province" value="">
+                    </div>
+                </div>
+
+                <div class="input-box-v">
+                    <label>ເມືອງ</label>
+                    <div class="custom-dropdown" id="edit-district-dropdown">
+                        <div class="custom-select-btn" onclick="toggleEditDropdown('district')">
+                            <span id="edit-district-selected-text">----- ກະລຸນາເລືອກເມືອງ -----</span>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0ef;"></i>
+                        </div>
+                        <div class="custom-dropdown-list" id="edit-district-list">
+                            <div class="custom-option" onclick="selectEditDistrict('', '----- ກະລຸນາເລືອກເມືອງ -----')">----- ກະລຸນາເລືອກເມືອງ -----</div>
+                        </div>
+                        <input type="hidden" id="edit-district" value="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-box-v">
+                    <label>ເບີ WhatsApp</label>
+                    <input type="text" id="edit-whatsapp" placeholder="ເບີ WhatsApp" autocomplete="off">
+                </div>
+                <div class="input-box-v">
+                    <label>Facebook</label>
+                    <input type="text" id="edit-facebook" placeholder="ຊື່ Facebook" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-row" style="grid-template-columns: 1fr;">
+                <div class="input-box-v">
+                    <label>ວິຊາທີ່ເລືອກຮຽນ</label>
+                    <select id="edit-subject">
+                        <option value="Ph4">ຟີຊິກສາດ ມ.4</option>
+                        <option value="Ph56">ຟີຊິກສາດ ມ.5+6</option>
+                        <option value="Ph7">ຟີຊິກສາດ ມ.7</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 12px;">
+                <button type="button" class="btn-action-custom btn-back" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i> ຍົກເລີກ</button>
+                <button type="button" class="btn-action-custom" onclick="updateStudent()"><i class="fa-solid fa-floppy-disk"></i> ແກ້ໄຂ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        let myList = [];
+        let allStudentsData = [];
+        let manageStudentsData = [];
+        let gradeChartInstance = null;
+        let provinceChartInstance = null;
+
+        const laoData = {
+            "ນະຄອນຫຼວງວຽງຈັນ": ["ເມືອງຈັນທະບູລີ", "ເມືອງສີໂຄດຕະບອງ", "ເມືອງສີສັດຕະນາກ", "ເມືອງໄຊເສດຖາ", "ເມືອງຫາດຊາຍຟອງ", "ເມືອງສັງທອງ", "ເມືອງນາຊາຍທອງ", "ເມືອງໄຊທານີ", "ເມືອງປາກງື່ມ"],
+            "ຜົ້ງສາລີ": ["ເມືອງຜົ້ງສາລີ", "ເມືອງໄໝ່", "ເມືອງຂວາ", "ເມືອງສຳພັນ", "ເມືອງບູນເໜືອ", "ເມືອງຍອດອູ", "ເມືອງບູນໃຕ້"],
+            "ຫຼວງນ້ຳທາ": ["ເມືອງນ້ຳທາ", "ເມືອງສິງ", "ເມືອງລອງ", "ເມືອງວຽງພູຄາ", "ເມືອງນາແລ້"],
+            "ອຸດົມໄຊ": ["ເມືອງໄຊ", "ເມືອງນາໝໍ້", "ເມືອງຫຼາ", "ເມືອງງາ", "ເມືອງແບງ", "ເມືອງປາກແບ່ງ", "ເມືອງຮຸນ"],
+            "ບໍ່ແກ້ວ": ["ເມືອງຫວ້ຍຊາຍ", "ເມືອງຕົ້ນເຜິ້ງ", "ເມືອງເມິງ", "ເມືອງຜາອຸດົມ", "ເມືອງປາກທາ"],
+            "ຫຼວງພະບາງ": ["ເມືອງຫຼວງພະບາງ", "ເມືອງຊຽງເງິນ", "ເມືອງນານ", "ເມືອງປາກອູ", "ເມືອງນ້ຳບາກ", "ເມືອງງອຍ", "ເມືອງປາກແຊງ", "ເມືອງໂພນໄຊ", "ເມືອງຈອມເພັດ", "ເມືອງວຽງຄຳ", "ເມືອງພູຄູນ", "ເມືອງໂພນທອງ"],
+            "ຫົວພັນ": ["ເມືອງຊຳເໜືອ", "ເມືອງຊຽງຄໍ້", "ເມືອງວຽງທອງ", "ເມືອງວຽງໄຊ", "ເມືອງຫົວເມືອງ", "ເມືອງຊຳໃຕ້", "ສົບເບົ້າ", "ແອດ"],
+            "ໄຊຍະບູລີ": ["ເມືອງໄຊຍະບູລີ", "ເມືອງຄອບ", "ເມືອງຫົງສາ", "ເມືອງເງິນ", "ເມືອງຊຽງຮ່ອນ", "ເມືອງພຽງ", "ເມືອງປາກລາຍ", "ເມືອງແກ່ນທ້າວ", "ເມືອງບໍ່ແຕນ", "ເມືອງທົ່ງມີໄຊ"],
+            "ຊຽງຂວາງ": ["ເມືອງແປກ", "ເມືອງຄຳ", "ເມືອງໜອງແຮດ", "ເມືອງຄູນ", "ເມືອງໝອກ", "ເມືອງພູກູດ", "ເມືອງຜາໄຊ"],
+            "ແຂວງວຽງຈັນ": ["ໂພນໂຮງ", "ທຸລະຄົມ", "ແກ້ວອຸດົມ", "ກາສີ", "ວັງວຽງ", "ເຟືອງ", "ຊະນາຄາມ", "ແມດ", "ຫີນເຫີບ", "ວຽງຄຳ", "ລອງຊານ", "ຮົ່ມ", "ໄຊສົມບູນ", "ໜື່ນ"],
+            "ບໍລິຄຳໄຊ": ["ເມືອງປາກຊັນ", "ເມືອງທ່າພະບາດ", "ເມືອງປາກກະດິງ", "ເມືອງບໍລິຄັນ", "ເມືອງຄຳເກີດ", "ເມືອງວຽງທອງ", "ເມືອງໄຊຈຳພອນ"],
+            "ຄຳມ່ວນ": ["ເມືອງທ່າແຂກ", "ເມືອງມະຫາໄຊ", "ເມືອງໜອງບົກ", "ເມືອງຫີນບູນ", "ເມືອງຍົມມະລາດ", "ເມືອງບົວລະພາ", "ເມືອງນາກາຍ", "ເມືອງເຊບັ້ງໄຟ", "ເມືອງໄຊບົວທອງ", "ເມືອງຄູນຄຳ"],
+            "ສະຫວັນນະເຂດ": ["ໄກສອນພົມວິຫານ", "ອຸທຸມພອນ", "ອາດສະພັງທອງ", "ພິນ", "ເຊໂປນ", "ນອງ", "ທ່າປາງທອງ", "ສອງຄອນ", "ຈຳພອນ", "ຊົນບຸລີ", "ໄຊບຸລີ", "ວິລະບູລີ", "ອາດສະພອນ", "ໄຊພູທອງ", "ທ່າພະລານໄຊ"],
+            "ສາລະວັນ": ["ສາລະວັນ", "ຕະໂອຍ", "ຕຸ້ມລານ", "ລະຄອນເພັງ", "ວາປີ", "ຄົງເຊໂດນ", "ເລົ່າງາມ", "ສະມ່ວຍ"],
+            "ເຊກອງ": ["ລະມາມ", "ກະລຶມ", "ດາກຈຶງ", "ທ່າແຕງ"],
+            "ຈຳປາສັກ": ["ປາກເຊ", "ຊະນະສົມບູນ", "ບາຈຽງຈະເລີນສຸກ", "ປາກຊ່ອງ", "ປະທຸມພອນ", "ໂພນທອງ", "ຈຳປາສັກ", "ສຸຂຸມມາ", "ມູນລະປະໂມກ", "ໂຂງ"],
+            "ອັດຕະປື": ["ໄຊເສດຖາ", "ສາມັກຄີໄຊ", "ສະໜາມໄຊ", "ສານໄຊ", "ພູວົງ"],
+            "ໄຊສົມບູນ": ["ເມືອງອານຸວົງ", "ເມືອງລ້ອງຊານ", "ເມືອງລ້ອງແຈ້ງ", "ເມືອງຮົ່ມ", "ເມືອງທ່າໂທມ"]
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            let provinceListEl = document.getElementById('province-list');
+            let editProvinceListEl = document.getElementById('edit-province-list');
+            
+            provinceListEl.innerHTML = `<div class="custom-option" onclick="selectProvince('', '----- ກະລຸນາເລືອກແຂວງ -----')">----- ກະລຸນາເລືອກແຂວງ -----</div>`;
+            editProvinceListEl.innerHTML = `<div class="custom-option" onclick="selectEditProvince('', '----- ກະລຸນາເລືອກແຂວງ -----')">----- ກະລຸນາເລືອກແຂວງ -----</div>`;
+
+            for (let province in laoData) {
+                let div1 = document.createElement('div');
+                div1.className = 'custom-option';
+                div1.textContent = province;
+                div1.setAttribute('onclick', `selectProvince('${province}', '${province}')`);
+                provinceListEl.appendChild(div1);
+
+                let div2 = document.createElement('div');
+                div2.className = 'custom-option';
+                div2.textContent = province;
+                div2.setAttribute('onclick', `selectEditProvince('${province}', '${province}')`);
+                editProvinceListEl.appendChild(div2);
+            }
+
+            loadDashboardData();
+        });
+
+        function toggleDropdown(type) {
+            let pList = document.getElementById('province-list');
+            let dList = document.getElementById('district-list');
+
+            if (type === 'province') {
+                pList.classList.toggle('active');
+                dList.classList.remove('active');
+            } else {
+                dList.classList.toggle('active');
+                pList.classList.remove('active');
+            }
+        }
+
+        function toggleEditDropdown(type) {
+            let pList = document.getElementById('edit-province-list');
+            let dList = document.getElementById('edit-district-list');
+
+            if (type === 'province') {
+                pList.classList.toggle('active');
+                dList.classList.remove('active');
+            } else {
+                dList.classList.toggle('active');
+                pList.classList.remove('active');
+            }
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('#province-dropdown')) {
+                document.getElementById('province-list').classList.remove('active');
+            }
+            if (!e.target.closest('#district-dropdown')) {
+                document.getElementById('district-list').classList.remove('active');
+            }
+            if (!e.target.closest('#edit-province-dropdown')) {
+                document.getElementById('edit-province-list').classList.remove('active');
+            }
+            if (!e.target.closest('#edit-district-dropdown')) {
+                document.getElementById('edit-district-list').classList.remove('active');
+            }
+        });
+
+        function selectProvince(value, text) {
+            document.getElementById('province').value = value;
+            document.getElementById('province-selected-text').textContent = text;
+            document.getElementById('province-list').classList.remove('active');
+            removeError(document.getElementById('province-dropdown').querySelector('.custom-select-btn'));
+
+            let districtListEl = document.getElementById('district-list');
+            districtListEl.innerHTML = `<div class="custom-option" onclick="selectDistrict('', '----- ກະລຸນາເລືອກເມືອງ -----')">----- ກະລຸນາເລືອກເມືອງ -----</div>`;
+            document.getElementById('district').value = '';
+            document.getElementById('district-selected-text').textContent = '----- ກະລຸນາເລືອກເມືອງ -----';
+
+            if (laoData[value]) {
+                laoData[value].forEach(d => {
+                    let div = document.createElement('div');
+                    div.className = 'custom-option';
+                    div.textContent = d;
+                    div.setAttribute('onclick', `selectDistrict('${d}', '${d}')`);
+                    districtListEl.appendChild(div);
+                });
+            }
+        }
+
+        function selectDistrict(value, text) {
+            document.getElementById('district').value = value;
+            document.getElementById('district-selected-text').textContent = text;
+            document.getElementById('district-list').classList.remove('active');
+            removeError(document.getElementById('district-dropdown').querySelector('.custom-select-btn'));
+        }
+
+        function selectEditProvince(value, text) {
+            document.getElementById('edit-province').value = value;
+            document.getElementById('edit-province-selected-text').textContent = text;
+            document.getElementById('edit-province-list').classList.remove('active');
+
+            let districtListEl = document.getElementById('edit-district-list');
+            districtListEl.innerHTML = `<div class="custom-option" onclick="selectEditDistrict('', '----- ກະລຸນາເລືອກເມືອງ -----')">----- ກະລຸນາເລືອກເມືອງ -----</div>`;
+            document.getElementById('edit-district').value = '';
+            document.getElementById('edit-district-selected-text').textContent = '----- ກະລຸນາເລືອກເມືອງ -----';
+
+            if (laoData[value]) {
+                laoData[value].forEach(d => {
+                    let div = document.createElement('div');
+                    div.className = 'custom-option';
+                    div.textContent = d;
+                    div.setAttribute('onclick', `selectEditDistrict('${d}', '${d}')`);
+                    districtListEl.appendChild(div);
+                });
+            }
+        }
+
+        function selectEditDistrict(value, text) {
+            document.getElementById('edit-district').value = value;
+            document.getElementById('edit-district-selected-text').textContent = text;
+            document.getElementById('edit-district-list').classList.remove('active');
+        }
+
+        function switchView(viewName, element) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
+            document.getElementById('view-' + viewName).classList.add('active-view');
+
+            if (element) {
+                document.querySelectorAll('.sidebar .nav-links a').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+            }
+
+            document.getElementById('page-title').innerText = 'ລະບົບບໍລິຫານການຮຽນ-ການສອນອອນໄລນ໌';
+
+            if (viewName === 'dashboard') {
+                loadDashboardData();
+            } else if (viewName === 'manage-students') {
+                loadManageStudents();
+            } else if (viewName === 'reports') {
+                loadStudentReport();
+            }
+        }
+
+        function removeError(element) {
+            if (element) {
+                element.classList.remove('input-error');
+            }
+        }
+
+        function goToStep2() {
+            let fields = [
+                { id: 'fullname', el: document.getElementById('fullname') },
+                { id: 'school', el: document.getElementById('school') },
+                { id: 'province', el: document.getElementById('province-dropdown').querySelector('.custom-select-btn') },
+                { id: 'district', el: document.getElementById('district-dropdown').querySelector('.custom-select-btn') },
+                { id: 'whatsapp', el: document.getElementById('whatsapp') },
+                { id: 'facebook', el: document.getElementById('facebook') }
+            ];
+            let isValid = true;
+
+            fields.forEach(item => {
+                let rawVal = document.getElementById(item.id).value;
+                if (!rawVal || rawVal.trim() === "") {
+                    item.el.classList.add('input-error');
+                    isValid = false;
+                } else {
+                    item.el.classList.remove('input-error');
+                }
+            });
+
+            if (!isValid) return;
+            switchView('register-step2');
+        }
+
+        function addSubject(code, name, price) {
+            if (myList.some(item => item.code === code)) {
+                alert('ວິຊານີ້ຖືກເລືອກແລ້ວ!');
+                return;
+            }
+            myList.push({ code, name, price });
+            updateTable();
+        }
+
+        function removeSubject(code) {
+            myList = myList.filter(item => item.code !== code);
+            updateTable();
+        }
+
+        function updateTable() {
+            let tbody = document.getElementById('selected-list');
+            tbody.innerHTML = '';
+            let total = 0;
+
+            if (myList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8;">ຍັງບໍ່ທັນມີວິຊາທີ່ເລືອກ</td></tr>`;
+            } else {
+                myList.forEach(item => {
+                    total += item.price;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${item.code}</td>
+                            <td>${item.name}</td>
+                            <td>${item.price.toLocaleString()}</td>
+                            <td><button type="button" class="btn-remove" onclick="removeSubject('${item.code}')"><i class="fa-solid fa-xmark"></i></button></td>
+                        </tr>
+                    `;
+                });
+            }
+            document.getElementById('total-price').innerText = `ລວມເງິນທັງໝົດ: ${total.toLocaleString()} ກີບ`;
+        }
+
+        function submitRegistration() {
+            if (myList.length === 0) {
+                alert('ກະລຸນາເລືອກຢ່າງໜ້ອຍ 1 ວິຊາຮຽນ!');
+                return;
+            }
+
+            let formData = {
+                fullname: document.getElementById('fullname').value,
+                school: document.getElementById('school').value,
+                province: document.getElementById('province').value,
+                district: document.getElementById('district').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                facebook: document.getElementById('facebook').value,
+                subjects: myList,
+                total_price: myList.reduce((sum, item) => sum + item.price, 0)
+            };
+
+            const modal = document.getElementById('loading-modal');
+            const spinner = document.getElementById('modal-spinner');
+            const icon = document.getElementById('modal-icon');
+            const text = document.getElementById('modal-text');
+
+            modal.style.display = 'flex';
+            spinner.style.display = 'block';
+            icon.style.display = 'none';
+            text.innerHTML = `ກຳລັງບັນທຶກ<span class="dots"><span>.</span><span>.</span><span>.</span></span>`;
+
+            fetch('http://localhost:3000/api/save-student', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    setTimeout(() => {
+                        spinner.style.display = 'none';
+                        icon.style.display = 'block';
+                        text.innerHTML = 'ບັນທຶກສຳເລັດ';
+
+                        setTimeout(() => {
+                            modal.style.display = 'none';
+                            myList = [];
+                            updateTable();
+                            document.getElementById('fullname').value = '';
+                            document.getElementById('school').value = '';
+                            document.getElementById('whatsapp').value = '';
+                            document.getElementById('facebook').value = '';
+                            selectProvince('', '----- ກະລຸນາເລືອກແຂວງ -----');
+                            selectDistrict('', '----- ກະລຸນາເລືອກເມືອງ -----');
+                            switchView('dashboard');
+                        }, 1000);
+                    }, 1500);
+                } else {
+                    modal.style.display = 'none';
+                    alert('ເກີດຂໍ້ຜິດພາດ: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                modal.style.display = 'none';
+                alert('ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບ Server ໄດ້!');
+            });
+        }
+
+        function loadDashboardData() {
+            fetch('http://localhost:3000/api/students')
+                .then(response => response.json())
+                .then(data => {
+                    let totalStudents = data.length;
+                    document.getElementById('dash-total-students').innerText = totalStudents;
+                    
+                    // ຄຳນວນຈຳນວນນັກຮຽນຍິງ ແລະ ຊາຍ (ກວດສອບຄຳວ່າ "ນາງ" ໃນຊື່)
+                    let girlCount = data.filter(s => (s.fullname || '').includes('ນາງ')).length;
+                    let boyCount = totalStudents - girlCount;
+                    
+                    // ສະແດງຜົນລົງໃນແຖວລຸ່ມຂອງຈຳນວນນັກຮຽນທັງໝົດ
+                    document.getElementById('dash-gender-stats').innerText = `ຊາຍ: ${boyCount} ຄົນ, ຍິງ: ${girlCount} ຄົນ`;
+
+                    let provinces = new Set(data.map(s => s.province).filter(p => p));
+                    document.getElementById('dash-total-provinces').innerText = provinces.size;
+
+                    let countPh4 = 0;
+                    let countPh56 = 0;
+                    let countPh7 = 0;
+                    let provinceCounts = {};
+
+                    data.forEach(student => {
+                        let subjects = [];
+                        try {
+                            subjects = typeof student.subjects === 'string' ? JSON.parse(student.subjects) : student.subjects;
+                        } catch (e) {
+                            subjects = [];
+                        }
+
+                        subjects.forEach(sub => {
+                            if (sub.code === 'Ph4') countPh4++;
+                            else if (sub.code === 'Ph56') countPh56++;
+                            else if (sub.code === 'Ph7') countPh7++;
+                        });
+
+                        let prov = student.province || 'ບໍ່ລະບຸ';
+                        provinceCounts[prov] = (provinceCounts[prov] || 0) + 1;
+                    });
+
+                    renderGradeChart(countPh4, countPh56, countPh7);
+                    renderProvinceChart(provinceCounts, totalStudents);
+                })
+                .catch(error => console.error('Error loading dashboard:', error));
+        }
+
+        function renderGradeChart(ph4, ph56, ph7) {
+            const ctx = document.getElementById('gradeChart').getContext('2d');
+            if (gradeChartInstance) gradeChartInstance.destroy();
+
+            gradeChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['ຟີຊິກສາດ ມ.4', 'ຟີຊິກສາດ ມ.5+6', 'ຟີຊິກສາດ ມ.7'],
+                    datasets: [{
+                        data: [ph4, ph56, ph7],
+                        backgroundColor: ['#0ef', '#3b82f6', '#10b981'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 0,
+                            right: 20
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            align: 'center',
+                            labels: { 
+                                color: '#fff', 
+                                font: { family: 'Noto Sans Lao', size: 12 },
+                                boxWidth: 15,
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderProvinceChart(provinceCounts, totalStudents) {
+            const ctx = document.getElementById('provinceChart').getContext('2d');
+            if (provinceChartInstance) provinceChartInstance.destroy();
+
+            let labels = Object.keys(provinceCounts);
+            let rawCounts = Object.values(provinceCounts);
+            let percentages = rawCounts.map(count => totalStudents > 0 ? ((count / totalStudents) * 100).toFixed(1) : 0);
+            let displayLabels = labels.map((prov, idx) => `${prov} (${percentages[idx]}%)`);
+
+            provinceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: displayLabels,
+                    datasets: [{
+                        label: 'ຈຳນວນນັກຮຽນ (ຄົນ)',
+                        data: rawCounts,
+                        backgroundColor: '#0ef',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { color: '#fff', font: { family: 'Noto Sans Lao' } }, grid: { color: '#2c4766' } },
+                        y: { ticks: { color: '#fff', font: { family: 'Noto Sans Lao' }, beginAtZero: true }, grid: { color: '#2c4766' } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function loadManageStudents() {
+            fetch('http://localhost:3000/api/students')
+                .then(response => response.json())
+                .then(data => {
+                    manageStudentsData = data;
+                    renderManageTable(manageStudentsData);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('manage-student-table-body').innerHTML = `<tr><td colspan="9" style="text-align: center; color: #ef4444;">ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບ Server ໄດ້!</td></tr>`;
+                });
+        }
+
+        function filterManageStudents() {
+            let keyword = document.getElementById('manage-search-input').value.toLowerCase();
+            let filtered = manageStudentsData.filter(student => {
+                let name = (student.fullname || '').toLowerCase();
+                let school = (student.school || '').toLowerCase();
+                let province = (student.province || '').toLowerCase();
+                let district = (student.district || '').toLowerCase();
+                let whatsapp = (student.whatsapp || '').toLowerCase();
+                return name.includes(keyword) || school.includes(keyword) || province.includes(keyword) || district.includes(keyword) || whatsapp.includes(keyword);
+            });
+            renderManageTable(filtered);
+        }
+
+        function renderManageTable(data) {
+            let tableBody = document.getElementById('manage-student-table-body');
+            let countLabel = document.getElementById('manage-student-count');
+            tableBody.innerHTML = '';
+            countLabel.innerText = `ຈຳນວນນັກຮຽນທັງໝົດ ${data.length} ຄົນ`;
+
+            if (data.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #94a3b8;">ບໍ່ພົບຂໍ້ມູນນັກຮຽນໃນລະບົບ</td></tr>`;
+                return;
+            }
+
+            data.forEach((student, index) => {
+                let subjects = [];
+                try {
+                    subjects = typeof student.subjects === 'string' ? JSON.parse(student.subjects) : student.subjects;
+                } catch (e) {
+                    subjects = [];
+                }
+                let subNames = subjects.map(s => s.name).join(', ');
+                let studentStr = btoa(unescape(encodeURIComponent(JSON.stringify(student))));
+
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${student.fullname}</td>
+                        <td>${student.school}</td>
+                        <td>${subNames}</td>
+                        <td>${student.district || ''}</td>
+                        <td>${student.province || ''}</td>
+                        <td>${student.whatsapp}</td>
+                        <td>${student.facebook || ''}</td>
+                        <td style="text-align: center;">
+                            <button class="btn-edit-icon" onclick='openEditModalFromBase64("${studentStr}")'><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete-icon" onclick="deleteStudent(${student.id})"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openEditModalFromBase64(base64Str) {
+            let student = JSON.parse(decodeURIComponent(escape(atob(base64Str))));
+            document.getElementById('edit-student-id').value = student.id;
+            document.getElementById('edit-fullname').value = student.fullname;
+            document.getElementById('edit-school').value = student.school;
+            document.getElementById('edit-whatsapp').value = student.whatsapp;
+            document.getElementById('edit-facebook').value = student.facebook || '';
+
+            let provinceVal = student.province || '';
+            document.getElementById('edit-province').value = provinceVal;
+            document.getElementById('edit-province-selected-text').textContent = provinceVal ? provinceVal : '----- ກະລຸນາເລືອກແຂວງ -----';
+
+            let districtListEl = document.getElementById('edit-district-list');
+            districtListEl.innerHTML = `<div class="custom-option" onclick="selectEditDistrict('', '----- ກະລຸນາເລືອກເມືອງ -----')">----- ກະລຸນາເລືອກເມືອງ -----</div>`;
+            
+            if (laoData[provinceVal]) {
+                laoData[provinceVal].forEach(d => {
+                    let div = document.createElement('div');
+                    div.className = 'custom-option';
+                    div.textContent = d;
+                    div.setAttribute('onclick', `selectEditDistrict('${d}', '${d}')`);
+                    districtListEl.appendChild(div);
+                });
+            }
+
+            let districtVal = student.district || '';
+            document.getElementById('edit-district').value = districtVal;
+            document.getElementById('edit-district-selected-text').textContent = districtVal ? districtVal : '----- ກະລຸນາເລືອກເມືອງ -----';
+
+            let subjects = [];
+            try {
+                subjects = typeof student.subjects === 'string' ? JSON.parse(student.subjects) : student.subjects;
+            } catch (e) {
+                subjects = [];
+            }
+            if (subjects.length > 0) {
+                document.getElementById('edit-subject').value = subjects[0].code || 'Ph4';
+            }
+
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+
+        function updateStudent() {
+            let id = document.getElementById('edit-student-id').value;
+            let subjectCode = document.getElementById('edit-subject').value;
+            let subjectName = subjectCode === 'Ph4' ? 'ຟີຊິກສາດ ມ.4' : subjectCode === 'Ph56' ? 'ຟີຊິກສາດ ມ.5+6' : 'ຟີຊິກສາດ ມ.7';
+            let subjectPrice = 599000;
+
+            let updatedData = {
+                fullname: document.getElementById('edit-fullname').value,
+                school: document.getElementById('edit-school').value,
+                province: document.getElementById('edit-province').value,
+                district: document.getElementById('edit-district').value,
+                whatsapp: document.getElementById('edit-whatsapp').value,
+                facebook: document.getElementById('edit-facebook').value,
+                subjects: [{ code: subjectCode, name: subjectName, price: subjectPrice }],
+                total_price: subjectPrice
+            };
+
+            closeEditModal();
+
+            const modal = document.getElementById('loading-modal');
+            const spinner = document.getElementById('modal-spinner');
+            const icon = document.getElementById('modal-icon');
+            const text = document.getElementById('modal-text');
+
+            modal.style.display = 'flex';
+            spinner.style.display = 'block';
+            icon.style.display = 'none';
+            text.innerHTML = `ກຳລັງແກ້ໄຂ<span class="dots"><span>.</span><span>.</span><span>.</span></span>`;
+
+            fetch(`http://localhost:3000/api/update-student/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    setTimeout(() => {
+                        spinner.style.display = 'none';
+                        icon.style.display = 'block';
+                        text.innerHTML = 'ແກ້ໄຂສຳເລັດ';
+
+                        setTimeout(() => {
+                            modal.style.display = 'none';
+                            loadManageStudents();
+                            loadStudentReport();
+                        }, 1000);
+                    }, 1500);
+                } else {
+                    modal.style.display = 'none';
+                    alert('ເກີດຂໍ້ຜິດພາດ: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                modal.style.display = 'none';
+                alert('ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບ Server ໄດ້!');
+            });
+        }
+
+        function deleteStudent(id) {
+            const modal = document.getElementById('loading-modal');
+            const spinner = document.getElementById('modal-spinner');
+            const icon = document.getElementById('modal-icon');
+            const text = document.getElementById('modal-text');
+
+            modal.style.display = 'flex';
+            spinner.style.display = 'block';
+            icon.style.display = 'none';
+            text.innerHTML = `ກຳລັງລຶບ<span class="dots"><span>.</span><span>.</span><span>.</span></span>`;
+
+            fetch(`http://localhost:3000/api/delete-student/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    setTimeout(() => {
+                        spinner.style.display = 'none';
+                        icon.style.display = 'block';
+                        text.innerHTML = 'ລຶບຂໍ້ມູນສຳເລັດ';
+
+                        setTimeout(() => {
+                            modal.style.display = 'none';
+                            loadManageStudents();
+                            loadStudentReport();
+                        }, 1000);
+                    }, 1500);
+                } else {
+                    modal.style.display = 'none';
+                    alert('ເກີດຂໍ້ຜິດພາດ: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                modal.style.display = 'none';
+                alert('ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບ Server ໄດ້!');
+            });
+        }
+
+        function loadStudentReport() {
+            fetch('http://localhost:3000/api/students')
+                .then(response => response.json())
+                .then(data => {
+                    allStudentsData = data;
+                    filterStudentReport();
+                })
+                .catch(error => {
+                    console.error('Error fetching students:', error);
+                    document.getElementById('report-table-body').innerHTML = `<tr><td colspan="8" style="text-align: center; color: #ef4444;">ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບ Server ໄດ້!</td></tr>`;
+                });
+        }
+
+        function filterStudentReport() {
+            let selectedValue = document.getElementById('report-grade-select').value;
+            let displayBox = document.getElementById('report-result-display');
+            let tableBody = document.getElementById('report-table-body');
+            let tableTitle = document.getElementById('table-section-title');
+
+            let filteredStudents = allStudentsData.filter(student => {
+                let subjects = [];
+                try {
+                    subjects = typeof student.subjects === 'string' ? JSON.parse(student.subjects) : student.subjects;
+                } catch (e) {
+                    subjects = [];
+                }
+
+                if (selectedValue === 'all') return true;
+                return subjects.some(s => s.code === selectedValue);
+            });
+
+            if (selectedValue === 'all') {
+                let totalAll = allStudentsData.length;
+                displayBox.innerText = `ຈຳນວນນັກຮຽນ ${totalAll} ຄົນ`;
+                tableTitle.innerHTML = `<i class="fa-solid fa-users"></i> ລາຍຊື່ນັກຮຽນທັງໝົດໃນລະບົບ (${totalAll} ຄົນ)`;
+            } else {
+                let gradeName = selectedValue === 'Ph4' ? 'ຟີຊິກສາດ ມ.4' : selectedValue === 'Ph56' ? 'ຟີຊິກສາດ ມ.5+6' : 'ຟີຊິກສາດ ມ.7';
+                let count = filteredStudents.length;
+                displayBox.innerText = `ຈຳນວນນັກຮຽນ ${count} ຄົນ`;
+                tableTitle.innerHTML = `<i class="fa-solid fa-users"></i> ລາຍຊື່ນັກຮຽນ (${gradeName}) - ${count} ຄົນ`;
+            }
+
+            tableBody.innerHTML = '';
+            if (filteredStudents.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94a3b8;">ບໍ່ພົບຂໍ້ມູນນັກຮຽນໃນຊັ້ນນີ້</td></tr>`;
+            } else {
+                filteredStudents.forEach((student, index) => {
+                    let subjects = [];
+                    try {
+                        subjects = typeof student.subjects === 'string' ? JSON.parse(student.subjects) : student.subjects;
+                    } catch (e) {
+                        subjects = [];
+                    }
+                    let subNames = subjects.map(s => s.name).join(', ');
+
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${student.fullname}</td>
+                            <td>${student.school}</td>
+                            <td>${subNames}</td>
+                            <td>${student.district || ''}</td>
+                            <td>${student.province || ''}</td>
+                            <td>${student.whatsapp}</td>
+                            <td>${student.facebook || ''}</td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        function exportToExcel() {
+            let selectedValue = document.getElementById('report-grade-select').value;
+            let filteredStudents = allStudentsData.filter(student => {
+                let subjects = [];
+                try {
+                    subjects = typeof student.subjects === 'string' ? JSON.parse(student.subjects) : student.subjects;
+                } catch (e) {
+                    subjects = [];
+                }
+                if (selectedValue === 'all') return true;
+                return subjects.some(s => s.code === selectedValue);
+            });
+
+            if (filteredStudents.length === 0) {
+                alert('ບໍ່ມີຂໍ້ມູນສຳລັບສົ່ງອອກເປັນ Excel!');
+                return;
+            }
+
+            let excelData = [
+                ["ລຳດັບ", "ຊື່ ແລະ ນາມສະກຸນ", "ໂຮງຮຽນ", "ວິຊາທີ່ເລືອກຮຽນ", "ເມືອງ", "ແຂວງ", "ເບີ WhatsApp", "Facebook"]
+            ];
+
+            filteredStudents.forEach((student, index) => {
+                let subjects = [];
+                try {
+                    subjects = typeof student.subjects === 'string' ? JSON.parse(student.subjects) : student.subjects;
+                } catch (e) {
+                    subjects = [];
+                }
+                let subNames = subjects.map(s => s.name).join(', ');
+
+                excelData.push([
+                    index + 1,
+                    student.fullname || '',
+                    student.school || '',
+                    subNames,
+                    student.district || '',
+                    student.province || '',
+                    student.whatsapp || '',
+                    student.facebook || ''
+                ]);
+            });
+
+            let ws = XLSX.utils.aoa_to_sheet(excelData);
+            let wb = XLSX.utils.book_new();
+
+            let range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    let cell_address = {c: C, r: R};
+                    let cell_ref = XLSX.utils.encode_cell(cell_address);
+                    if (!ws[cell_ref]) continue;
+                    
+                    if (!ws[cell_ref].s) ws[cell_ref].s = {};
+                    ws[cell_ref].s.font = { name: "Saysetha OT", sz: 11 };
+                }
+            }
+
+            XLSX.utils.book_append_sheet(wb, ws, "ລາຍງານນັກຮຽນ");
+
+            let fileName = selectedValue === 'all' ? "student_report_all.xlsx" : `student_report_${selectedValue}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+        }
+    </script>
+</body>
+</html>
