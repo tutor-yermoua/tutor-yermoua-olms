@@ -20,19 +20,21 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap');
-
-        *{
+*{
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Noto Sans Lao', sans-serif;
         }
         
+        /* 1. ປ່ຽນພື້ນຫຼັງຂອງ body ໃຫ້ເປັນສີຂາວ ແລະ ຕົວໜັງສືເປັນສີເຂັ້ມ */
         html, body{
-            height: 100vh;
-            background: #0f172a;
-            color: #fff;
-            overflow: hidden; 
+            height: auto;
+            min-height: 100vh;
+            background: #ffffff;
+            color: #1e293b;
+            overflow-x: hidden; /* ເຊື່ອງລູກເລື່ອນທາງນອນຂອບນອກ */
+            overflow-y: visible; /* ໃຫ້ສະແດງຜົນປົກກະຕິ ບໍ່ໃຫ້ເກີດ Scrollbar ຂອບນອກ */
             display: flex;
         }
 
@@ -41,31 +43,31 @@
             height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #0f172a; 
+            background: #f1f5f9; 
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #2c4766; 
+            background: #cbd5e1; 
             border-radius: 10px;
-            border: 2px solid #0f172a;
+            border: 2px solid #ffffff;
             transition: all 0.3s ease;
         }
         ::-webkit-scrollbar-thumb:hover,
         ::-webkit-scrollbar-thumb:active {
-            background: #0ef;
-            border: 3px solid #0f172a;
+            background: #3b82f6;
+            border: 3px solid #ffffff;
         }
 
-        /* Sidebar Styles */
+        /* Sidebar Styles (ສີຟ້າ) */
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
             height: 100vh;
-            width: 220px;
-            background: #1f293a;
+            width: 235px;
+            background: #0000ff;
             z-index: 100;
-            border-right: 1px solid #2c4766;
+            border-right: 1px solid #0000cc;
             padding-top: 10px;
             overflow-y: auto;
         }
@@ -75,19 +77,19 @@
             align-items: center;
             justify-content: center;
             padding: 15px 15px 25px 15px;
-            border-bottom: 1px solid #2c4766;
+            border-bottom: 1px solid #0000cc;
             margin-bottom: 10px;
         }
         .logo-icon-box {
-            width: 70px;
-            height: 70px;
+            width: 110px;
+            height: 110px;
             background-color: #ffffff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 3px solid #ffffff;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: 0.3s;
         }
@@ -95,67 +97,119 @@
             transform: scale(1.05);
         }
         .logo-icon-box i {
-            font-size: 1.8em;
-            color: #0d5cbe;
+            font-size: 4em;
+            color: #0000ff;
         }
         .sidebar .nav-links {
             margin-top: 0px;
         }
+        /* 1. ໃຫ້ກ່ອງ li ມີໄລຍະຫ່າງທັງຊ້າຍ ແລະ ຂວາ ພໍດີງາມ */
         .sidebar .nav-links li {
             position: relative;
             list-style: none;
-            height: 45px;
-            margin: 5px 0;
+            height: 40px;
+            margin: 5px 12px; /* ຫ່າງຈາກຂອບຊ້າຍ 12px ແລະ ຂອບຂວາ 12px ເຮັດໃຫ້ກ່ອງສັ້ນລົງ ບໍ່ຕິດຂອບຈົນເກີນໄປ */
         }
+
+        /* 2. ປຸ່ມ a ໃຫ້ມົນທຸກດ້ານ (Capsule) ຍ້ອນວ່າມັນບໍ່ຕິດຂອບແລ້ວ */
         .sidebar .nav-links li a {
             height: 100%;
             width: 100%;
             display: flex;
             align-items: center;
             text-decoration: none;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
+            border-radius: 15px; /* ມົນທຸກດ້ານ 4 ມຸມ ໃຫ້ເປັນຮູບແຄບຊູນສວຍງາມ */
+            padding-left: 12px;
         }
-        .sidebar .nav-links li a.active,
         .sidebar .nav-links li a:hover {
-            background: #2c4766;
+            background: rgba(255, 255, 255, 0.15); /* ເວລາເອົາເມົ້າຊີ້ຈະເປັນສີຟ້າອ່ອນໆ */
         }
+
+        /* ຕອນກົດເລືອກເມນູ (Active) ໃຫ້ພື້ນຫຼັງເປັນສີຂາວ ແລະ ຕົວໜັງສື/Icon ເປັນສີຟ້າ */
+        .sidebar .nav-links li a.active {
+            background: #ffffff !important; /* ພື້ນຫຼັງເມນູເປັນສີຂາວ */
+            box-shadow: -4px 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar .nav-links li a.active i {
+            color: #0000ff !important;     /* Icon ເປັນສີຟ້າ */
+        }
+
+        .sidebar .nav-links li a.active .link_name {
+            color: #0000ff !important;     /* ຂໍ້ຄວາມຊື່ເມນູເປັນສີຟ້າ */
+            font-weight: 700;
+        }
+
+        /* ຕັ້ງຄ່າ Icon ແລະ ຂໍ້ຄວາມປົກກະຕິ */
         .sidebar .nav-links li i {
             font-size: 16px;
-            color: #0ef;
+            color: #ffffff;
             min-width: 50px;
             text-align: center;
+            transition: 0.3s;
         }
+        
         .sidebar .nav-links li a .link_name {
             color: #fff;
             font-size: 16px;
-            font-weight: 400;
+            font-weight: 600; /* ໃຫ້ທຸກປຸ່ມເມນູທີ່ຍັງບໍ່ທັນກົດມີຄວາມໜາ ແລະ ເຂັ້ມຂຶ້ນ */
+            transition: 0.3s;
         }
-        .sidebar .nav-links .log_out {
+.sidebar .nav-links .log_out {
             position: absolute;
             bottom: 0;
-            width: 100%;
-            border-top: 1px solid #2c4766;
+            left: 0;
+            right: 0;
+            margin: 0 12px 15px 12px;
+            width: auto;
+            border-top: 1px solid #0000cc;
+            padding-top: 10px;
         }
 
-        /* Home Section */
+        .sidebar .nav-links .log_out a {
+            height: 40px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            border-radius: 15px;
+            padding-left: 12px;
+            background: transparent; /* 👈 ຕອນປົກກະຕິ ບໍ່ໃຫ້ມີພື້ນຫຼັງ (โปร่งใส) */
+            transition: all 0.3s ease;
+        }
+
+        /* ເວລາເອົາເມົ້າຊີ້ ຫຼື ຕອນກົດ ໃຫ້ປ່ຽນເປັນພື້ນຫຼັງສີແດງ */
+        .sidebar .nav-links .log_out a:hover,
+        .sidebar .nav-links .log_out a:active {
+            background: #ef4444 !important; /* ສີແດງ */
+        }
+
+        /* ໃຫ້ຕົວໜັງສື ແລະ Icon ເປັນສີຂາວສະເໝີ */
+        .sidebar .nav-links .log_out a i,
+        .sidebar .nav-links .log_out a .link_name {
+            color: #ffffff !important;
+        }
+        /* Home Section (ພື້ນຫຼັງດ້ານຂວາເປັນສີຂາວ) */
         .home-section {
             position: absolute;
-            background: #0f172a;
-            height: 100vh;
+            background: #ffffff;
+            min-height: 100vh;
             width: calc(100% - 220px);
             left: 220px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: visible;
         }
+        /* Navbar ສ່ວນເທິງ (ສີຟ້າ) */
         .home-section nav {
             height: 60px;
-            background: #1f293a;
+            background: #0000ff;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
-            border-bottom: 1px solid #2c4766;
+            border-bottom: 1px solid #0000cc;
             flex-shrink: 0;
         }
         .home-section nav .sidebar-button {
@@ -168,8 +222,8 @@
         .home-section nav .profile-details {
             display: flex;
             align-items: center;
-            background: #0f172a;
-            border: 2px solid #2c4766;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
             border-radius: 40px;
             padding: 3px 15px 3px 6px;
         }
@@ -177,7 +231,7 @@
             font-size: 13px;
             font-weight: 500;
             margin-left: 8px;
-            color: #fff;
+            color: #1e293b;
         }
 
         .home-content {
@@ -185,52 +239,114 @@
             overflow-y: auto; 
             flex-grow: 1;
         }
+
+        /* CSS ສຳລັບຫົວຂໍ້ໜ້າ (ເຊັ່ນ: ຈັດການຂໍ້ມູນນັກຮຽນທັງໝົດ) ໃຫ້ໃຫຍ່ ແລະ ໜາຂຶ້ນ */
+        .home-content .section-title,
+        .home-content h2,
+        .home-content .text {
+            font-size: 18px !important;
+            font-weight: 700 !important;
+            color: #1e293b;
+        }
+
+        /* Overview Boxes Container */
         .home-content .overview-boxes {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
+
+        /* ຕົກແຕ່ງກ່ອງແບບ Modern Gradient Card */
         .overview-boxes .box {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: calc(32% - 10px); /* ກັບມາເປັນ 3 ກ່ອງຄືເກົ່າ */
-            background: #1f293a;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border: 1px solid #2c4766;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: calc(32.6% - 10px);
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            padding: 20px 22px;
+            border-radius: 16px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 255, 0.08), 0 8px 10px -6px rgba(0, 0, 255, 0.08);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
+
+        .overview-boxes .right-side {
+            flex-grow: 1;
+            padding-right: 10px;
+        }
+
+        .overview-boxes .indicator span {
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 10.5px;
+        }
+
+        /* ຂອບແສງສະຫວ່າງດ້ານຊ້າຍຂອງກ່ອງ */
+        .overview-boxes .box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: #0000ff;
+        }
+
+        .overview-boxes .box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px -5px rgba(0, 0, 255, 0.15);
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+        }
+
         .overview-boxes .box-topic {
-            font-size: 18px;
-            color: #94a3b8;
+            font-size: 0.85em;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
         .overview-boxes .number {
             display: inline-block;
-            font-size: 22px;
-            margin-top: 3px;
-            font-weight: 600;
-            color: #0ef;
+            font-size: 30px;
+            margin: 6px 0;
+            font-weight: 800;
+            color: #0000ff;
+            line-height: 1.1;
         }
+
         .overview-boxes .indicator {
             display: flex;
             align-items: center;
-            font-size: 10px;
-            color: #94a3b8;
-            margin-top: 4px;
+            font-size: 11.5px;
+            color: #64748b;
+            font-weight: 500;
         }
+
         .overview-boxes .indicator i {
-            margin-right: 4px;
+            margin-right: 5px;
             color: #10b981;
+            font-size: 12px;
         }
+
         .overview-boxes .box .cart {
-            font-size: 30px;
-            color: #0ef;
-            background: rgba(0, 238, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
+            font-size: 26px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #0000ff 0%, #3b82f6 100%);
+            padding: 14px;
+            border-radius: 14px;
+            box-shadow: 0 8px 16px rgba(0, 0, 255, 0.25);
+            transition: all 0.35s ease;
+        }
+
+        .overview-boxes .box:hover .cart {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 20px rgba(0, 0, 255, 0.35);
         }
 
         /* Dashboard Charts Container */
@@ -241,20 +357,20 @@
             margin-top: 15px;
         }
         .chart-card {
-            background: #1f293a;
+            background: #ffffff;
             padding: 15px 20px;
             border-radius: 10px;
-            border: 1px solid #2c4766;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         .chart-card h3 {
-            color: #0ef;
+            color: #0000ff;
             font-size: 0.95em;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
-            border-bottom: 1px solid #2c4766;
+            border-bottom: 1px solid #e2e8f0;
             padding-bottom: 6px;
         }
         .chart-wrapper {
@@ -268,19 +384,20 @@
         .register-container {
             width: 100%;
             margin: 0;
-            background: #1f293a;
+            background: #ffffff;
             padding: 15px 20px;
             border-radius: 10px;
-            border: 1px solid #2c4766;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         .section-title {
-            color: #0ef;
+            color: #0000ff;
             font-size: 1em;
             margin: 30px 0 15px 0;
             display: flex;
             align-items: center;
             gap: 8px;
-            border-bottom: 1px solid #2c4766;
+            border-bottom: 1px solid #e2e8f0;
             padding-bottom: 4px;
         }
         .section-title:first-child {
@@ -297,7 +414,7 @@
         }
         .input-box-v label {
             display: block;
-            color: #0ef;
+            color: #0000ff;
             font-size: 0.8em;
             margin-bottom: 3px;
         }
@@ -309,10 +426,10 @@
         .input-box-v input, .input-box-v select {
             width: 100%;
             height: 35px;
-            background: #0f172a;
-            border: 2px solid #2c4766;
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
             border-radius: 6px;
-            color: #fff;
+            color: #1e293b;
             padding: 0 12px;
             font-size: 0.85em;
             outline: none;
@@ -327,10 +444,9 @@
             padding: 10px;
         }
         .input-box-v input:focus, .input-box-v select:focus {
-            border-color: #0ef;
+            border-color: #0000ff;
         }
 
-        /* Custom Dropdown Styling */
         .custom-dropdown {
             position: relative;
             width: 100%;
@@ -338,10 +454,10 @@
         .custom-select-btn {
             width: 100%;
             height: 35px;
-            background: #0f172a;
-            border: 2px solid #2c4766;
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
             border-radius: 6px;
-            color: #fff;
+            color: #1e293b;
             padding: 0 12px;
             font-size: 0.85em;
             display: flex;
@@ -351,7 +467,7 @@
             transition: 0.3s;
         }
         .custom-select-btn:hover {
-            border-color: #0ef;
+            border-color: #0000ff;
         }
         .custom-dropdown-list {
             position: absolute;
@@ -359,39 +475,38 @@
             left: 0;
             width: 100%;
             background: #ffffff;
-            border: 2px solid #2c4766;
+            border: 2px solid #cbd5e1;
             border-radius: 6px;
             max-height: 220px;
             overflow-y: auto;
             z-index: 9999;
             display: none;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         .custom-dropdown-list.active {
             display: block;
         }
         .custom-option {
             padding: 6px 10px;
-            color: #000;
+            color: #1e293b;
             font-size: 0.85em;
             cursor: pointer;
             border-bottom: 1px solid #f1f5f9;
             transition: 0.2s;
         }
         .custom-option:hover {
-            background: #0ef;
-            color: #1f293a;
+            background: #0000ff;
+            color: #ffffff;
         }
 
         .input-error {
             border-color: #ef4444 !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
+            background-color: #fef2f2 !important;
         }
         .input-wrapper i {
             position: absolute;
             left: 12px;
-            color: #0ef;
+            color: #0000ff;
             font-size: 0.9em;
             pointer-events: none;
         }
@@ -402,21 +517,21 @@
             gap: 12px;
         }
         .table-box {
-            background: #0f172a;
+            background: #f8fafc;
             padding: 12px;
             border-radius: 8px;
-            border: 1px solid #2c4766;
+            border: 1px solid #e2e8f0;
         }
         .table-box h4 {
-            color: #0ef;
+            color: #0000ff;
             margin-bottom: 8px;
             font-size: 0.9em;
         }
 
-        .table-container-scroll {
-            max-height: 400px !important;
-            overflow-y: auto;
-            overflow-x: auto;
+       .table-container-scroll {
+            max-height: 350px !important;
+            overflow-y: auto !important;
+            overflow-x: auto !important;
             width: 100%;
         }
 
@@ -426,22 +541,22 @@
         }
         th, td {
             padding: 7px 10px;
-            border-bottom: 1px solid #2c4766;
+            border-bottom: 1px solid #e2e8f0;
             font-size: 0.85em;
-            color: #fff;
+            color: #1e293b;
             text-align: left;
             white-space: nowrap;
         }
         th {
-            color: #94a3b8;
+            color: #ffffff !important;   /* ຕົວໜັງສືສີຂາວ */
             position: sticky;
             top: 0;
-            background: #0f172a;
+            background: #0000ff !important; /* ພື້ນຫຼັງສີຟ້າ */
             z-index: 5;
         }
         .btn-add {
-            background: #0ef;
-            color: #1f293a;
+            background: #0000ff;
+            color: #fff;
             border: none;
             width: 24px;
             height: 24px;
@@ -450,7 +565,7 @@
             font-weight: bold;
             transition: 0.3s;
         }
-        .btn-add:hover { background: #00bcd4; }
+        .btn-add:hover { background: #0000cc; }
         .btn-remove {
             background: #ef4444;
             color: #fff;
@@ -464,7 +579,7 @@
             margin-top: 8px;
             font-size: 0.95em;
             font-weight: 600;
-            color: #0ef;
+            color: #0000ff;
             text-align: right;
         }
         .btn-container {
@@ -473,8 +588,8 @@
             justify-content: space-between;
         }
         .btn-action-custom {
-            background: #0ef;
-            color: #1f293a;
+            background: #0000ff;
+            color: #ffffff;
             border: none;
             padding: 7px 18px;
             border-radius: 6px;
@@ -484,15 +599,15 @@
             transition: 0.3s;
         }
         .btn-action-custom:hover {
-            background: #00bcd4;
-            box-shadow: 0 0 10px rgba(0, 238, 255, 0.4);
+            background: #0000cc;
+            box-shadow: 0 0 10px rgba(0, 0, 255, 0.3);
         }
         .btn-back {
-            background: #2c4766;
+            background: #64748b;
             color: #fff;
         }
         .btn-back:hover {
-            background: #3a5b7d;
+            background: #475569;
             box-shadow: none;
         }
         
@@ -507,24 +622,24 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.5);
             z-index: 9999;
             justify-content: center;
             align-items: center;
         }
         .loading-content {
-            background: #1f293a;
-            border: 1px solid #2c4766;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             padding: 20px 30px;
             border-radius: 10px;
             text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         .spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid #2c4766;
-            border-top: 4px solid #0ef;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #0000ff;
             border-radius: 50%;
             animation: spin 1.5s linear infinite;
             margin: 0 auto 10px auto;
@@ -534,7 +649,7 @@
             100% { transform: rotate(360deg); }
         }
         .loading-text {
-            color: #0ef;
+            color: #0000ff;
             font-size: 0.95em;
             font-weight: 500;
         }
@@ -554,19 +669,19 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.5);
             z-index: 9998;
             justify-content: center;
             align-items: center;
         }
         .edit-modal-content {
-            background: #1f293a;
-            border: 1px solid #2c4766;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             padding: 18px 22px;
             border-radius: 10px;
             width: 100%;
             max-width: 580px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         .btn-edit-icon {
             background: #3b82f6;
@@ -606,26 +721,32 @@
                     <span class="link_name">ໜ້າຫຼັກ</span>
                 </a>
             </li>
+             <li>
+                <a href="#" onclick="switchView('register-step1', this)">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span class="link_name">ລົງທະບຽນຮຽນ</span>
+                </a>
+            </li>
             <li>
                 <a href="#" onclick="switchView('manage-students', this)">
                     <i class="fa-solid fa-users-gear"></i>
                     <span class="link_name">ຈັດການຂໍ້ມູນນັກຮຽນ</span>
                 </a>
             </li>
-            <li>
+             <li>
                 <a href="#" onclick="switchView('reports', this)">
                     <i class="fa-solid fa-chart-line"></i>
                     <span class="link_name">ລາຍງານຂໍ້ມູນນັກຮຽນ</span>
                 </a>
             </li>
-            <li>
-                <a href="#" onclick="switchView('register-step1', this)">
-                    <i class="fa-solid fa-book-bookmark"></i>
-                    <span class="link_name">ລົງທະບຽນຮຽນ</span>
+             <li>
+                <a href="#" onclick="switchView('users', this)">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span class="link_name">ຈັດການຜູ້ໃຊ້</span>
                 </a>
             </li>
             <li class="log_out">
-                <a href="index.html">
+                <a href="login.html">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span class="link_name">ອອກຈາກລະບົບ</span>
                 </a>
@@ -639,8 +760,8 @@
                 <span class="dashboard" id="page-title">ລະບົບບໍລິຫານການຮຽນ-ການສອນອອນໄລນ໌</span>
             </div>
             <div class="profile-details">
-                <i class="fa-solid fa-user-circle" style="font-size: 1.6rem; color: #0ef;"></i>
-                <span class="admin_name">ຜູ້ດູແລລະບົບ (Admin)</span>
+                <i class="fa-solid fa-user-circle" style="font-size: 1.6rem; color: #0000ff;"></i>
+                <span class="admin_name" id="user-profile-name">ຜູ້ດູແລລະບົບ (Admin)</span>
             </div>
         </nav>
 
@@ -704,7 +825,7 @@
             <!-- VIEW 2: ຈັດການຂໍ້ມູນນັກຮຽນ -->
             <div id="view-manage-students" class="view-section">
                 <div class="register-container">
-                    <div class="section-title"><i class="fa-solid fa-users-gear"></i> ຈັດການຂໍ້ມູນນັກຮຽນທັງໝົດ</div>
+                    <div class="section-title"><i class="fa-solid fa-users-gear"></i> ຈັດການຂໍ້ມູນນັກຮຽນ</div>
                     
                     <div style="display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: center; margin-top: 8px; padding-right: 5px;">
                         <div class="input-box-v">
@@ -714,12 +835,12 @@
                             </div>
                         </div>
                         <div style="text-align: right; padding-right: 5px;">
-                            <div id="manage-student-count" style="font-size: 1em; font-weight: bold; color: #0ef;">ຈຳນວນນັກຮຽນທັງໝົດ 0 ຄົນ</div>
+                            <div id="manage-student-count" style="font-size: 1em; font-weight: bold; color: #0000ff;">ຈຳນວນນັກຮຽນທັງໝົດ 0 ຄົນ</div>
                         </div>
                     </div>
 
                     <div class="table-box" style="margin-top: 8px;">
-                        <h4 style="margin-bottom: 8px;"><i class="fa-solid fa-list"></i> ຕາຕະລາງລາຍຊື່ນັກຮຽນ</h4>
+                        <h4 style="margin-bottom: 8px;"><i class="fa-solid fa-users"></i>ລາຍຊື່ນັກຮຽນ</h4>
                         <div class="table-container-scroll">
                             <table>
                                 <thead>
@@ -737,7 +858,7 @@
                                 </thead>
                                 <tbody id="manage-student-table-body">
                                     <tr>
-                                        <td colspan="9" style="text-align: center; color: #94a3b8;">ກຳລັງໂຫຼດຂໍ້ມູນຈາກ Database...</td>
+                                        <td colspan="9" style="text-align: center; color: #64748b;">ກຳລັງໂຫຼດຂໍ້ມູນຈາກ Database...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -746,17 +867,24 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: ລາຍງານຂໍ້ມູນນັກຮຽນ -->
+<!-- VIEW 3: ລາຍງານຂໍ້ມູນນັກຮຽນ -->
             <div id="view-reports" class="view-section">
                 <div class="register-container">
                     <div class="section-title"><i class="fa-solid fa-chart-line"></i> ລາຍງານຂໍ້ມູນນັກຮຽນ ແລະ ສະຖິຕິຕາມຊັ້ນຮຽນ</div>
                     
                     <div style="display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: center; margin-top: 8px; padding-right: 5px;">
                         <div style="display: flex; gap: 12px; align-items: center;">
+                            
+                            <!-- 1. ຍ້າຍ Icon ຕົວກອງ ແລະ ຂໍ້ຄວາມ ให้อยู่นອກ ComboBox -->
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-filter" style="color: #0000ff; font-size: 15px;"></i>
+                                <span style="font-weight: 600; color: #1e293b; font-size: 0.9em;">ຕົວກອງ:</span>
+                            </div>
+
+                            <!-- 2. ComboBox (cb) อยู่ถัดมา -->
                             <div class="input-box-v">
                                 <div class="input-wrapper" style="display: inline-block;">
-                                    <i class="fa-solid fa-filter" style="top: 50%; transform: translateY(-50%); z-index: 10;"></i>
-                                    <select id="report-grade-select" onchange="filterStudentReport()" style="padding-left: 35px; width: 230px; height: 34px;">
+                                    <select id="report-grade-select" onchange="filterStudentReport()" style="padding-left: 12px; width: 230px; height: 34px;">
                                         <option value="all">----- ສະແດງຂໍ້ມູນທັງໝົດ -----</option>
                                         <option value="Ph4">ຟີຊິກສາດ ມ.4</option>
                                         <option value="Ph56">ຟີຊິກສາດ ມ.5+6 (ຫ້ອງລວມ)</option>
@@ -764,18 +892,20 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <!-- 3. ປຸ່ມສົ່ງອອກ Excel ຢູ່ຖັດໄປທາງຫຼັງສຸດ -->
                             <button type="button" class="btn-action-custom" onclick="exportToExcel()" style="height: 34px; background: #10b981; color: #fff; display: flex; align-items: center; gap: 6px; padding: 0 12px;">
                                 <i class="fa-solid fa-download"></i> ສົ່ງອອກ Excel
                             </button>
                         </div>
 
                         <div style="text-align: right; padding-right: 5px;">
-                            <div id="report-result-display" style="font-size: 1em; font-weight: bold; color: #0ef;"></div>
+                            <div id="report-result-display" style="font-size: 1em; font-weight: bold; color: #0000ff;"></div>
                         </div>
                     </div>
 
                     <div class="table-box" style="margin-top: 8px;">
-                        <h4 id="table-section-title" style="margin-bottom: 8px;"><i class="fa-solid fa-users"></i> ລາຍຊື່ນັກຮຽນທັງໝົດໃນລະບົບ</h4>
+                        <h4 id="table-section-title" style="margin-bottom: 8px;"><i class="fa-solid fa-users"></i>ລາຍຊື່ນັກຮຽນ</h4> 
                         <div class="table-container-scroll">
                             <table>
                                 <thead>
@@ -792,7 +922,7 @@
                                 </thead>
                                 <tbody id="report-table-body">
                                     <tr>
-                                        <td colspan="8" style="text-align: center; color: #94a3b8;">ກຳລັງໂຫຼດຂໍ້ມູນຈາກ Database...</td>
+                                        <td colspan="8" style="text-align: center; color: #64748b;">ກຳລັງໂຫຼດຂໍ້ມູນຈາກ Database...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -829,7 +959,7 @@
                             <div class="custom-dropdown" id="province-dropdown">
                                 <div class="custom-select-btn" onclick="toggleDropdown('province')">
                                     <span id="province-selected-text">----- ກະລຸນາເລືອກແຂວງ -----</span>
-                                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0ef;"></i>
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0000ff;"></i>
                                 </div>
                                 <div class="custom-dropdown-list" id="province-list"></div>
                                 <input type="hidden" id="province" value="">
@@ -841,7 +971,7 @@
                             <div class="custom-dropdown" id="district-dropdown">
                                 <div class="custom-select-btn" onclick="toggleDropdown('district')">
                                     <span id="district-selected-text">----- ກະລຸນາເລືອກເມືອງ -----</span>
-                                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0ef;"></i>
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0000ff;"></i>
                                 </div>
                                 <div class="custom-dropdown-list" id="district-list">
                                     <div class="custom-option" onclick="selectDistrict('', '----- ກະລຸນາເລືອກເມືອງ -----')">----- ກະລຸນາເລືອກເມືອງ -----</div>
@@ -925,7 +1055,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="selected-list">
-                                    <tr><td colspan="4" style="text-align: center; color: #94a3b8;">ຍັງບໍ່ທັນມີວິຊາທີ່ເລືອກ</td></tr>
+                                    <tr><td colspan="4" style="text-align: center; color: #64748b;">ຍັງບໍ່ທັນມີວິຊາທີ່ເລືອກ</td></tr>
                                 </tbody>
                             </table>
                             <div class="total-box" id="total-price">ລວມເງິນທັງໝົດ: 0 ກີບ</div>
@@ -935,6 +1065,56 @@
                     <div class="btn-container">
                         <button type="button" class="btn-action-custom btn-back" onclick="switchView('register-step1')"><i class="fa-solid fa-arrow-left"></i> ກັບຄືນ</button>
                         <button type="button" class="btn-action-custom" onclick="submitRegistration()">ສົ່ງຂໍ້ມູນນັກຮຽນ</button>
+                    </div>
+                </div>
+            </div>
+            <!-- VIEW: ຈັດການຜູ້ໃຊ້ລະບົບ -->
+            <div id="view-users" class="view-section">
+                <div class="register-container">
+                    <!-- ຫົວຂໍ້ໜ້າ ພ້ອມ Icon -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 40px; height: 40px; background: #0000ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem;">
+                                <i class="fa-solid fa-users-gear"></i>
+                            </div>
+                            <h2 style="color: #1e293b; font-weight: 700; font-size: 1.2rem; margin: 0;">ຈັດການຜູ້ໃຊ້</h2>
+                        </div>
+                    </div>
+
+                    <!-- ແຖບ Top Control: ຊອກຫາ (ຊ້າຍ) & ປຸ່ມເພີ່ມຜູ້ໃຊ້ໃໝ່ (ຂວາ) -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 15px; flex-wrap: wrap;">
+                        <div class="input-box-v" style="width: 280px;">
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass" style="top: 50%; transform: translateY(-50%); z-index: 10;"></i>
+                                <input type="text" id="user-search-input" onkeyup="filterUserTable()" placeholder="ຄົ້ນຫາຊື່ຜູ້ໃຊ້ ຫຼື ອີເມວ..." style="padding-left: 35px; width: 100%; height: 34px;" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-action-custom" onclick="openAddUserModal()" style="height: 34px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-user-plus"></i> ເພີ່ມຜູ້ໃຊ້ໃໝ່
+                        </button>
+                    </div>
+
+                    <!-- ຕາຕະລາງສະແດງລາຍຊື່ຜູ້ໃຊ້ (ມີ: ລຳດັບ, ຊື່ຜູ້ໃຊ້, ອີເມວ, ລະຫັດຜ່ານ, ສິດທິຜູ້ໃຊ້, ຈັດການ) -->
+                    <div class="table-box">
+                        <h4 style="margin-bottom: 8px;"><i class="fa-solid fa-users"></i> ລາຍຊື່ຜູ້ໃຊ້ໃນລະບົບ</h4>
+                        <div class="table-container-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ລຳດັບ</th>
+                                        <th>ຊື່ຜູ້ໃຊ້</th>
+                                        <th>ອີເມວ</th>
+                                        <th>ລະຫັດຜ່ານ</th>
+                                        <th>ສິດທິຜູ້ໃຊ້</th>
+                                        <th style="text-align: center;">ຈັດການ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-table-body">
+                                     
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -978,7 +1158,7 @@
                     <div class="custom-dropdown" id="edit-province-dropdown">
                         <div class="custom-select-btn" onclick="toggleEditDropdown('province')">
                             <span id="edit-province-selected-text">----- ກະລຸນາເລືອກແຂວງ -----</span>
-                            <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0ef;"></i>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0000ff;"></i>
                         </div>
                         <div class="custom-dropdown-list" id="edit-province-list"></div>
                         <input type="hidden" id="edit-province" value="">
@@ -990,7 +1170,7 @@
                     <div class="custom-dropdown" id="edit-district-dropdown">
                         <div class="custom-select-btn" onclick="toggleEditDropdown('district')">
                             <span id="edit-district-selected-text">----- ກະລຸນາເລືອກເມືອງ -----</span>
-                            <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0ef;"></i>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 0.8em; color: #0000ff;"></i>
                         </div>
                         <div class="custom-dropdown-list" id="edit-district-list">
                             <div class="custom-option" onclick="selectEditDistrict('', '----- ກະລຸນາເລືອກເມືອງ -----')">----- ກະລຸນາເລືອກເມືອງ -----</div>
@@ -1026,6 +1206,69 @@
                 <button type="button" class="btn-action-custom btn-back" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i> ຍົກເລີກ</button>
                 <button type="button" class="btn-action-custom" onclick="updateStudent()"><i class="fa-solid fa-floppy-disk"></i> ແກ້ໄຂ</button>
             </div>
+        </div>
+    </div>
+    <!-- Add User Modal Pop-up (ຕາມຮູບ 2) -->
+    <div id="add-user-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <div class="edit-modal-content" style="max-width: 440px;">
+            <div class="section-title" style="margin-top: 0; color: #0000ff;"><i class="fa-solid fa-user-plus"></i> ລົງທະບຽນຜູ້ໃຊ້ໃໝ່</div>
+            
+            <form id="add-user-form" onsubmit="handleRegisterUser(event)">
+                <!-- 1. ຊື່ຜູ້ໃຊ້ -->
+                <div class="input-box-v" style="margin-bottom: 12px;">
+                    <label>ຊື່ຜູ້ໃຊ້ (Username)</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user" style="top: 50%; transform: translateY(-50%); z-index: 10;"></i>
+                        <input type="text" id="reg-username" required placeholder="ປ້ອນຊື່ຜູ້ໃຊ້" style="padding-left: 35px; height: 36px;" autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- 2. ອີເມວ -->
+                <div class="input-box-v" style="margin-bottom: 12px;">
+                    <label>ອີເມວ (Email)</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope" style="top: 50%; transform: translateY(-50%); z-index: 10;"></i>
+                        <input type="email" id="reg-email" required placeholder="example@ymk.la" style="padding-left: 35px; height: 36px;" autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- 3. ລະຫັດຜ່ານ -->
+                <div class="input-box-v" style="margin-bottom: 12px;">
+                    <label>ລະຫັດຜ່ານ (Password)</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock" style="top: 50%; transform: translateY(-50%); z-index: 10;"></i>
+                        <input type="password" id="reg-password" required placeholder="••••••••" style="padding-left: 35px; height: 36px;" autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- 4. ຢືນຢັນລະຫັດຜ່ານ -->
+                <div class="input-box-v" style="margin-bottom: 12px;">
+                    <label>ຢືນຢັນລະຫັດຜ່ານ (Confirm Password)</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-shield-halved" style="top: 50%; transform: translateY(-50%); z-index: 10;"></i>
+                        <input type="password" id="reg-confirm-password" required placeholder="••••••••" style="padding-left: 35px; height: 36px;" autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- 5. ສິດທິຜູ້ໃຊ້ (Role) -->
+                <div class="input-box-v" style="margin-bottom: 20px;">
+                    <label>ສິດທິຜູ້ໃຊ້ (Role)</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user-tag" style="top: 50%; transform: translateY(-50%); z-index: 10;"></i>
+                        <select id="reg-role" style="padding-left: 35px; height: 36px; width: 100%;">
+                            <option value="User">User (ຜູ້ໃຊ້ທົ່ວໄປ)</option>
+                            <option value="Teacher">Teacher (ອາຈານ)</option>
+                            <option value="Admin">Admin (ຜູ້ດູແລລະບົບ)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ປຸ່ມຍົກເລີກ (ຊ້າຍ) & ປຸ່ມລົງທະບຽນ (ຂວາ) -->
+                <div style="display: flex; justify-content: space-between; gap: 10px;">
+                    <button type="button" class="btn-action-custom btn-back" onclick="closeAddUserModal()" style="flex: 1;"><i class="fa-solid fa-xmark"></i> ຍົກເລີກ</button>
+                    <button type="submit" class="btn-action-custom" style="flex: 1;"><i class="fa-solid fa-user-check"></i> ລົງທະບຽນ</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1080,7 +1323,21 @@
             }
 
             loadDashboardData();
-        });
+            loadUsers();
+        
+            // 👈 ເອົາມາໃສ່ໄວ້ບ່ອນນີ້ (ຂ້າງໃນ DOMContentLoaded)
+            let userStr = localStorage.getItem('currentUser');
+            if (userStr) {
+                let user = JSON.parse(userStr);
+                let profileNameEl = document.getElementById('user-profile-name');
+                if (profileNameEl) {
+                   profileNameEl.innerText = user.username;
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+     });
+
 
         function toggleDropdown(type) {
             let pList = document.getElementById('province-list');
@@ -1250,7 +1507,7 @@
             let total = 0;
 
             if (myList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8;">ຍັງບໍ່ທັນມີວິຊາທີ່ເລືອກ</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">ຍັງບໍ່ທັນມີວິຊາທີ່ເລືອກ</td></tr>`;
             } else {
                 myList.forEach(item => {
                     total += item.price;
@@ -1339,11 +1596,9 @@
                     let totalStudents = data.length;
                     document.getElementById('dash-total-students').innerText = totalStudents;
                     
-                    // ຄຳນວນຈຳນວນນັກຮຽນຍິງ ແລະ ຊາຍ (ກວດສອບຄຳວ່າ "ນາງ" ໃນຊື່)
                     let girlCount = data.filter(s => (s.fullname || '').includes('ນາງ')).length;
                     let boyCount = totalStudents - girlCount;
                     
-                    // ສະແດງຜົນລົງໃນແຖວລຸ່ມຂອງຈຳນວນນັກຮຽນທັງໝົດ
                     document.getElementById('dash-gender-stats').innerText = `ຊາຍ: ${boyCount} ຄົນ, ຍິງ: ${girlCount} ຄົນ`;
 
                     let provinces = new Set(data.map(s => s.province).filter(p => p));
@@ -1388,7 +1643,7 @@
                     labels: ['ຟີຊິກສາດ ມ.4', 'ຟີຊິກສາດ ມ.5+6', 'ຟີຊິກສາດ ມ.7'],
                     datasets: [{
                         data: [ph4, ph56, ph7],
-                        backgroundColor: ['#0ef', '#3b82f6', '#10b981'],
+                        backgroundColor: ['#0000ff', '#3b82f6', '#10b981'],
                         borderWidth: 1
                     }]
                 },
@@ -1396,17 +1651,14 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     layout: {
-                        padding: {
-                            left: 0,
-                            right: 20
-                        }
+                        padding: { left: 0, right: 20 }
                     },
                     plugins: {
                         legend: {
                             position: 'right',
                             align: 'center',
                             labels: { 
-                                color: '#fff', 
+                                color: '#1e293b', 
                                 font: { family: 'Noto Sans Lao', size: 12 },
                                 boxWidth: 15,
                                 padding: 15
@@ -1433,7 +1685,7 @@
                     datasets: [{
                         label: 'ຈຳນວນນັກຮຽນ (ຄົນ)',
                         data: rawCounts,
-                        backgroundColor: '#0ef',
+                        backgroundColor: '#0000ff',
                         borderRadius: 4
                     }]
                 },
@@ -1441,8 +1693,8 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { ticks: { color: '#fff', font: { family: 'Noto Sans Lao' } }, grid: { color: '#2c4766' } },
-                        y: { ticks: { color: '#fff', font: { family: 'Noto Sans Lao' }, beginAtZero: true }, grid: { color: '#2c4766' } }
+                        x: { ticks: { color: '#1e293b', font: { family: 'Noto Sans Lao' } }, grid: { color: '#e2e8f0' } },
+                        y: { ticks: { color: '#1e293b', font: { family: 'Noto Sans Lao' }, beginAtZero: true }, grid: { color: '#e2e8f0' } }
                     },
                     plugins: {
                         legend: { display: false }
@@ -1484,7 +1736,7 @@
             countLabel.innerText = `ຈຳນວນນັກຮຽນທັງໝົດ ${data.length} ຄົນ`;
 
             if (data.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #94a3b8;">ບໍ່ພົບຂໍ້ມູນນັກຮຽນໃນລະບົບ</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #64748b;">ບໍ່ພົບຂໍ້ມູນນັກຮຽນໃນລະບົບ</td></tr>`;
                 return;
             }
 
@@ -1697,17 +1949,17 @@
             if (selectedValue === 'all') {
                 let totalAll = allStudentsData.length;
                 displayBox.innerText = `ຈຳນວນນັກຮຽນ ${totalAll} ຄົນ`;
-                tableTitle.innerHTML = `<i class="fa-solid fa-users"></i> ລາຍຊື່ນັກຮຽນທັງໝົດໃນລະບົບ (${totalAll} ຄົນ)`;
+                tableTitle.innerHTML = `<i class="fa-solid fa-users"></i> ລາຍຊື່ນັກຮຽນ`;
             } else {
                 let gradeName = selectedValue === 'Ph4' ? 'ຟີຊິກສາດ ມ.4' : selectedValue === 'Ph56' ? 'ຟີຊິກສາດ ມ.5+6' : 'ຟີຊິກສາດ ມ.7';
                 let count = filteredStudents.length;
                 displayBox.innerText = `ຈຳນວນນັກຮຽນ ${count} ຄົນ`;
-                tableTitle.innerHTML = `<i class="fa-solid fa-users"></i> ລາຍຊື່ນັກຮຽນ (${gradeName}) - ${count} ຄົນ`;
+                tableTitle.innerHTML = `<i class="fa-solid fa-users"></i> ລາຍຊື່ນັກຮຽນ`;
             }
 
             tableBody.innerHTML = '';
             if (filteredStudents.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94a3b8;">ບໍ່ພົບຂໍ້ມູນນັກຮຽນໃນຊັ້ນນີ້</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #64748b;">ບໍ່ພົບຂໍ້ມູນນັກຮຽນໃນຊັ້ນນີ້</td></tr>`;
             } else {
                 filteredStudents.forEach((student, index) => {
                     let subjects = [];
@@ -1797,6 +2049,181 @@
             let fileName = selectedValue === 'all' ? "student_report_all.xlsx" : `student_report_${selectedValue}.xlsx`;
             XLSX.writeFile(wb, fileName);
         }
+
+        // ດຶງຂໍ້ມູນຜູ້ໃຊ້ເມື່ອຄລິກເຂົ້າໜ້າ ຈັດການຜູ້ໃຊ້
+       function loadUsers() {
+            fetch('http://localhost:3000/api/users')
+                .then(response => response.json())
+                .then(data => {
+                    let tbody = document.getElementById('user-table-body');
+                    tbody.innerHTML = '';
+
+                    if (data.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #64748b;">ບໍ່ພົບຂໍ້ມູນຜູ້ໃຊ້ໃນລະບົບ</td></tr>`;
+                        return;
+                    }
+
+                    data.forEach((user, index) => {
+                        let badgeColor = user.role === 'Admin' ? '#dbeafe; color: #1e40af' : user.role === 'Teacher' ? '#fef3c7; color: #d97706' : '#f1f5f9; color: #475569';
+                        
+                        // แปลงข้อมูล user ເປັນ Base64 ເພື່ອສົ່ງເຂົ້າ Modal ແກ້ໄຂ
+                        let userStr = btoa(unescape(encodeURIComponent(JSON.stringify(user))));
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td style="padding: 10px;">${index + 1}</td>
+                                <td style="font-weight: 600; color: #0000ff;">${user.username}</td>
+                                <td>${user.email}</td>
+                                <td>••••••</td>
+                                <td><span style="background: ${badgeColor}; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">${user.role || 'User'}</span></td>
+                                <td style="text-align: center;">
+                                    <!-- 👈 ເພີ່ມປຸ່ມແກ້ໄຂສີຟ້ານີ້ເຂົ້າໄປ -->
+                                    <button class="btn-edit-icon" onclick='openEditUserModal("${userStr}")'><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-delete-icon" onclick="deleteUser(${user.id})"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('user-table-body').innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ef4444;">ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບ Server ໄດ້!</td></tr>`;
+                });
+        }
+
+        // ເປີດ/ປິດ Modal ປ້ອນຂໍ້ມູນ
+        function openAddUserModal() {
+            document.getElementById('add-user-modal').style.display = 'flex';
+        }
+
+        function closeAddUserModal() {
+            document.getElementById('add-user-modal').style.display = 'none';
+            document.getElementById('add-user-form').reset();
+        }
+
+        // ຟັງຊັນຊ່ວຍສະແດງ Loading Modal
+        function showLoadingModal(message) {
+            const modal = document.getElementById('loading-modal');
+            const spinner = document.getElementById('modal-spinner');
+            const icon = document.getElementById('modal-icon');
+            const text = document.getElementById('modal-text');
+
+            modal.style.display = 'flex';
+            spinner.style.display = 'block';
+            icon.style.display = 'none';
+            text.innerHTML = `${message}<span class="dots"><span>.</span><span>.</span><span>.</span></span>`;
+        }
+
+        // ຟັງຊັນຊ່ວຍສະແດງຜົນສຳເລັດ/ຜິດພາດ ໃນ Loading Modal
+        function showResultMessage(isSuccess, message, callback) {
+            const spinner = document.getElementById('modal-spinner');
+            const icon = document.getElementById('modal-icon');
+            const text = document.getElementById('modal-text');
+
+            spinner.style.display = 'none';
+            icon.style.display = 'block';
+            
+            if (isSuccess) {
+                icon.style.color = '#10b981';
+                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            } else {
+                icon.style.color = '#ef4444';
+                icon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+            }
+            text.innerText = message;
+
+            setTimeout(() => {
+                document.getElementById('loading-modal').style.display = 'none';
+                if (callback) callback();
+            }, 1200);
+        }
+
+        // ສົ່ງຂໍ້ມູນລົງທະບຽນຜູ້ໃຊ້ໃໝ່ໄປ Server
+        function handleRegisterUser(e) {
+            e.preventDefault();
+            let username = document.getElementById('reg-username').value;
+            let email = document.getElementById('reg-email').value;
+            let password = document.getElementById('reg-password').value;
+            let confirmPassword = document.getElementById('reg-confirm-password').value;
+            let role = document.getElementById('reg-role').value;
+
+            if (password !== confirmPassword) {
+                alert('ລະຫັດຜ່ານ ແລະ ຢືນຢັນລະຫັດຜ່ານບໍ່ກົງກັນ!');
+                return;
+            }
+
+            // ປິດ Modal ຟອມກ່ອນ ແລ້ວເປີດ Loading Modal
+            closeAddUserModal();
+            showLoadingModal('ກຳລັງລົງທະບຽນຜູ້ໃຊ້');
+
+            let userData = { username, email, password, role };
+
+            setTimeout(() => {
+                fetch('http://localhost:3000/api/register-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showResultMessage(true, 'ລົງທະບຽນຜູ້ໃຊ້ສຳເລັດ!', () => {
+                            loadUsers();
+                        });
+                    } else {
+                        showResultMessage(false, 'ເກີດຂໍ້ຜິດພາດ: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showResultMessage(false, 'ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບ Server ໄດ້!');
+                });
+            }, 1500); // หน่วงเวลา 1.5s ໃຫ້ວົງມົນປິ່ນ
+        }
+
+        // ຟັງຊັນລຶບຜູ້ໃຊ້ອອກຈາກ Database ຕາມ id
+        function deleteUser(id) {
+            showLoadingModal('ກຳລັງລຶບຜູ້ໃຊ້');
+
+            setTimeout(() => {
+                fetch(`http://localhost:3000/api/delete-user/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showResultMessage(true, 'ລຶບຜູ້ໃຊ້ສຳເລັດ!', () => {
+                            loadUsers();
+                        });
+                    } else {
+                        showResultMessage(false, 'ເກີດຂໍ້ຜິດພາດ: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showResultMessage(false, 'ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບ Server ໄດ້!');
+                });
+            }, 1500);
+        }
+
+        // ຟັງຊັນຊອກຫາຜູ້ໃຊ້ໃນຕາຕະລາງ
+        function filterUserTable() {
+            let keyword = document.getElementById('user-search-input').value.toLowerCase();
+            let rows = document.querySelectorAll('#user-table-body tr');
+            rows.forEach(row => {
+                let text = row.textContent.toLowerCase();
+                row.style.display = text.includes(keyword) ? '' : 'none';
+            });
+        }
+        // 👈 ວາງໄວ້ບ່ອນນີ້ (ກ່ອນປິດ </script>)
+        const originalSwitchView = switchView;
+        switchView = function(viewName, element) {
+            originalSwitchView(viewName, element);
+            if (viewName === 'users') {
+                document.getElementById('page-title').innerText = 'ຈັດການຜູ້ໃຊ້ລະບົບ';
+                loadUsers(); // ໂຫຼດຂໍ້ມູນຈາກ Database ມາສະແດງ
+            }
+        };
     </script>
 </body>
 </html>
